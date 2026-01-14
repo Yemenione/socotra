@@ -39,16 +39,16 @@ const Hero = () => {
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
 
                 {/* Text Content */}
-                <div className="md:col-span-8 text-center md:text-left pt-20">
+                <div className="md:col-span-7 text-center md:text-left pt-20 relative z-20">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1, ease: "easeOut" }}
                         className="mb-6 flex items-center gap-4 justify-center md:justify-start"
                     >
-                        <div className="h-px w-12 bg-gold-400/60" />
+                        <div className="h-[2px] w-16 bg-gradient-to-r from-gold-400 to-transparent" />
                         <span className="text-sand-100 uppercase tracking-[0.4em] text-xs font-bold shadow-black drop-shadow-lg">
-                            Est. 1924 • Socotra Island
+                            Paris • Since 1924
                         </span>
                     </motion.div>
 
@@ -56,11 +56,11 @@ const Hero = () => {
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                        className="font-heading text-5xl md:text-9xl font-black text-sand-50 leading-[0.9] md:leading-[0.85] mb-8 drop-shadow-2xl"
+                        className="font-heading text-6xl md:text-8xl lg:text-9xl font-black text-sand-50 leading-[0.9] mb-8 drop-shadow-2xl"
                     >
-                        ROYAL <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.1)" }}>
-                            YEMENI
+                        A LEGACY <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-100 drop-shadow-sm">
+                            OF TASTE
                         </span>
                     </motion.h1>
 
@@ -68,9 +68,9 @@ const Hero = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 1, delay: 0.6 }}
-                        className="text-sand-200 text-lg md:text-xl font-light max-w-lg leading-relaxed mb-12 mx-auto md:mx-0 drop-shadow-md"
+                        className="text-sand-100/90 text-lg md:text-xl font-light max-w-xl leading-relaxed mb-12 mx-auto md:mx-0 drop-shadow-lg backdrop-blur-[2px]"
                     >
-                        Experience the ancient culinary traditions of the Arabian Peninsula, reimagined for the modern connoisseur.
+                        Embark on a culinary odyssey where the ancient spices of Arabia meet modern Parisian elegance. A dining experience curated for the senses.
                     </motion.p>
 
                     <motion.div
@@ -79,32 +79,49 @@ const Hero = () => {
                         transition={{ duration: 1, delay: 0.8 }}
                         className="flex flex-col md:flex-row gap-6 items-center"
                     >
-                        <button className="relative overflow-hidden group bg-gold-400 text-rich-black font-bold text-xs tracking-[0.2em] py-5 px-10 rounded-full transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(212,175,55,0.6)]">
-                            <span className="relative z-10 group-hover:text-white transition-colors">EXPLORE MENU</span>
-                            <div className="absolute inset-0 bg-rich-black transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+                        <button className="relative overflow-hidden group bg-gradient-to-r from-gold-500 to-gold-600 text-rich-black font-bold text-xs tracking-[0.2em] py-5 px-10 rounded-sm shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all duration-500">
+                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">EXPLORE COLLECTION</span>
+                            <div className="absolute inset-0 bg-rich-black transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out" />
                         </button>
 
-                        <button className="flex items-center gap-4 text-sand-50 text-xs tracking-[0.2em] font-bold group hover:text-gold-300 transition-colors">
-                            <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold-300 transition-colors">
-                                <span className="text-xl">▶</span>
+                        <button className="flex items-center gap-4 text-sand-50 text-xs tracking-[0.2em] font-bold group hover:text-gold-300 transition-all">
+                            <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold-300 group-hover:scale-110 transition-all duration-300 backdrop-blur-sm bg-white/5">
+                                <span className="text-xl pl-1">▶</span>
                             </div>
-                            WATCH THE STORY
+                            <span>OUR STORY</span>
                         </button>
                     </motion.div>
                 </div>
 
-                {/* Decorative Floating Element */}
-                <div className="hidden md:block md:col-span-4 relative h-[600px]">
+                {/* Highlight/Video Frame */}
+                <div className="hidden md:block md:col-span-5 relative h-[600px] flex items-center justify-center">
                     <motion.div
-                        animate={{ y: [0, -20, 0], rotate: [0, 2, 0] }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-transparent backdrop-blur-sm rounded-[100px] border border-white/10 skew-y-6"
-                    />
-                    <motion.div
-                        animate={{ y: [0, 30, 0], rotate: [0, -1, 0] }}
-                        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                        className="absolute inset-0 top-10 left-10 bg-gradient-to-bl from-sand-500/10 to-transparent backdrop-blur-md rounded-[100px] border border-white/5 skew-y-12 -z-10"
-                    />
+                        initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                        transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
+                        className="relative w-full h-[500px] rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl backdrop-blur-md"
+                    >
+                        {/* Frame Border Effect */}
+                        <div className="absolute inset-0 border border-gold-500/30 rounded-[2rem] z-20 pointer-events-none" />
+
+                        {/* Content Placeholder for Future Video */}
+                        <div className="absolute inset-0 bg-rich-black/60 z-10 flex flex-col items-center justify-center text-center p-8">
+                            <div className="w-20 h-20 rounded-full border-2 border-gold-500/50 flex items-center justify-center mb-6 text-gold-400">
+                                <span className="text-3xl">✨</span>
+                            </div>
+                            <h3 className="text-2xl font-heading font-bold text-sand-50 mb-2">The Socotra Experience</h3>
+                            <p className="text-sand-200 text-sm font-light tracking-wide uppercase">Coming Soon</p>
+                        </div>
+
+                        {/* Background Accent for the Frame (Subtle) */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-gold-900/20 to-rich-black z-0" />
+
+                        {/* Optional: Glossy Shine */}
+                        <div className="absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-10 left-full animate-shine" />
+                    </motion.div>
+
+                    {/* Decorative Elements behind frame */}
+                    <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gold-500/5 blur-[100px] rounded-full" />
                 </div>
             </div>
 
