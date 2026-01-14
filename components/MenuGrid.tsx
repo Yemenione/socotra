@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { menuData, MenuCategory, MenuItem } from "@/lib/menu-data";
+import { menuData as staticMenuData, MenuCategory, MenuItem } from "@/lib/menu-data";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
@@ -13,16 +13,73 @@ const MenuGrid = () => {
     const { language, dir } = useLanguage();
     const t = translations[language].menu;
 
+    // State for dynamic data
+    const [menuData, setMenuData] = useState<MenuCategory[]>(staticMenuData);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [catsRes, itemsRes] = await Promise.all([
+                    fetch('/api/categories'),
+                    fetch('/api/items')
+                ]);
+
+                if (catsRes.ok && itemsRes.ok) {
+                    const categories = await catsRes.json();
+                    const items = await itemsRes.json();
+
+                    if (Array.isArray(categories) && Array.isArray(items) && categories.length > 0 && items.length > 0) {
+                        // Transform DB data to MenuCategory structure
+                        const dynamicMenu: MenuCategory[] = categories.map((cat: any) => ({
+                            id: cat.id,
+                            title: cat.title, // Default to title
+                            titleEn: cat.title, // Simplified for now, or fetch from DB if columns exist
+                            titleAr: cat.title, // Simplified
+                            items: items
+                                .filter((item: any) => item.categoryId === cat.id)
+                                .map((item: any) => ({
+                                    name: item.name,
+                                    nameEn: item.name,
+                                    nameAr: item.nameAr || item.name,
+                                    description: item.description,
+                                    descriptionEn: item.description,
+                                    price: Number(item.price).toFixed(2) + "€",
+                                    image: "/logo.png", // Default image as DB might not have it yet or needs structure update
+                                    featured: false
+                                }))
+                        }));
+
+                        // Filter out empty categories
+                        const validMenu = dynamicMenu.filter(c => c.items.length > 0);
+
+                        if (validMenu.length > 0) {
+                            setMenuData(validMenu);
+                            // Set active category to the first one of dynamic data
+                            if (validMenu.length > 0) setActiveCategory(validMenu[0].id);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to load menu data", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     // Helper to get localized text
     const getCategoryTitle = (cat: MenuCategory) => {
-        if (language === 'ar') return cat.titleAr;
-        if (language === 'en') return cat.titleEn;
+        if (language === 'ar') return cat.titleAr || cat.title;
+        if (language === 'en') return cat.titleEn || cat.title;
         return cat.title;
     };
 
     const getItemName = (item: MenuItem) => {
-        if (language === 'ar') return item.nameAr;
-        if (language === 'en') return item.nameEn;
+        if (language === 'ar') return item.nameAr || item.name;
+        if (language === 'en') return item.nameEn || item.name;
         return item.name;
     };
 
@@ -87,7 +144,7 @@ const MenuGrid = () => {
                         {menuData.find(c => c.id === activeCategory)?.items.map((item, index) => (
                             <motion.div
                                 layout
-                                key={item.name}
+                                key={item.name + index}
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
