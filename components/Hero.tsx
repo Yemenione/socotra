@@ -19,11 +19,20 @@ const Hero = () => {
             {/* Parallax Background */}
             <motion.div
                 style={{ y, opacity }}
-                className="absolute inset-0 z-0"
+                className="absolute inset-0 z-0 bg-rich-black"
             >
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544025162-d7669d683251?q=80&w=2500&auto=format&fit=crop')] bg-cover bg-center scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-sand-50/90" />
-                <div className="absolute inset-0 bg-rich-black/20 mix-blend-multiply" />
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover scale-110 opacity-70 mix-blend-overlay"
+                >
+                    {/* Premium Slow Motion Steaming Food/Chefs or Scenic Yemen - using a placeholder for now */}
+                    <source src="https://cdn.coverr.co/videos/coverr-slow-motion-of-steaming-food-5259/1080p.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-b from-rich-black/60 via-rich-black/30 to-sand-50/90" />
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
             </motion.div>
 
             {/* Content Container */}
