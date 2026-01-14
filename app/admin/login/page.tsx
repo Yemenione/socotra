@@ -9,14 +9,24 @@ export default function AdminLogin() {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simple mock login for V1 as planned
-        if (email === 'admin@socotra.com' && password === 'admin123') {
-            document.cookie = "admin_token=valid; path=/";
-            router.push('/admin');
-        } else {
-            alert('Invalid credentials');
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (res.ok) {
+                router.push('/admin');
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Invalid credentials');
+            }
+        } catch (error) {
+            console.error("Login Error", error);
+            alert('An error occurred during login');
         }
     };
 
