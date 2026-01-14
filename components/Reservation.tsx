@@ -18,9 +18,22 @@ const Reservation = () => {
         guests: "2"
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simple WhatsApp Logic
+        try {
+            const res = await fetch('/api/reservations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+            if (res.ok) {
+                alert(language === 'ar' ? 'تم استلام طلبك! سيتم تحويلك إلى واتساب للتأكيد.' : 'Reservation received! Redirecting to WhatsApp for confirmation.');
+            }
+        } catch (error) {
+            console.error("Failed to save reservation", error);
+        }
+
+        // WhatsApp Logic (Always run as fallback or confirmation)
         const message = `Hello, I would like to reserve a table for ${formData.guests} people on ${formData.date} at ${formData.time}. Name: ${formData.name}`;
         const whatsappUrl = `https://wa.me/33178990678?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
