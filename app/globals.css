@@ -6,7 +6,8 @@
   --color-sand-100: #F7F1E3;
   --color-sand-200: #EADBC8;
   --color-sand-300: #DEC4A6;
-  --color-sand-default: #D4B48F;
+  --color-sand: #D4B48F;
+  --color-sand-400: #D4B48F;
   --color-sand-500: #C69C6D;
   --color-sand-600: #A67C52;
   --color-sand-900: #5D4037;
@@ -14,7 +15,8 @@
   --color-gold-100: #F9F1D8;
   --color-gold-200: #F0DEAA;
   --color-gold-300: #E6CB7D;
-  --color-gold-default: #D4AF37;
+  --color-gold: #D4AF37;
+  --color-gold-400: #D4AF37;
   --color-gold-500: #C5A028;
   --color-gold-600: #A3841F;
   --color-gold-700: #826919;
