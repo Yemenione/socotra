@@ -40,6 +40,26 @@ model MenuItem {
   @@index([categoryId])
 }
 
+model GalleryImage {
+  id        String   @id @default(cuid())
+  src       String
+  alt       String
+  category  String?  // e.g., 'interior', 'food', 'events'
+  createdAt DateTime @default(now())
+}
+
+model SiteConfig {
+  id              String   @id @default(cuid())
+  heroVideoUrl    String?  @default("/videos/hero-bg.mp4")
+  instagramUrl    String?
+  facebookUrl     String?
+  twitterUrl      String?
+  tiktokUrl       String?
+  whatsappNumber  String?
+  contactEmail    String?
+  updatedAt       DateTime @updatedAt
+}
+
 model Reservation {
   id        String   @id @default(cuid())
   name      String

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -45,6 +45,22 @@ const galleryImages = [
 
 const GalleryGrid = () => {
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
+    const [images, setImages] = useState(galleryImages);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const res = await fetch('/api/gallery', { next: { revalidate: 0 } });
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    setImages(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch gallery images", error);
+            }
+        };
+        fetchImages();
+    }, []);
 
     return (
         <section className="py-24 px-6 md:px-12 bg-rich-black relative">
@@ -66,7 +82,7 @@ const GalleryGrid = () => {
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[250px]">
-                    {galleryImages.map((image, index) => (
+                    {images.map((image, index) => (
                         <motion.div
                             key={index}
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -106,8 +122,8 @@ const GalleryGrid = () => {
                 >
                     <div className="relative max-w-5xl w-full max-h-[90vh] aspect-video">
                         <Image
-                            src={galleryImages[selectedImage].src}
-                            alt={galleryImages[selectedImage].alt}
+                            src={images[selectedImage].src}
+                            alt={images[selectedImage].alt}
                             fill
                             className="object-contain"
                         />

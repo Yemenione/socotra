@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,26 @@ const Hero = () => {
     const ref = useRef(null);
     const { language, dir } = useLanguage();
     const t = translations[language].hero;
+
+    const [videoUrl, setVideoUrl] = useState("https://www.youtube.com/embed/VN5EoMGb-xw?autoplay=1&mute=1&controls=0&loop=1&playlist=VN5EoMGb-xw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1");
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/settings', { next: { revalidate: 60 } });
+                const data = await res.json();
+                if (data?.heroVideoUrl) {
+                    // Simple check: if it looks like a file path, use it directly? 
+                    // For now, let's just use what's provided. If it's a Youtube URL, the user needs to provide the embed version or we'd need complex parsing.
+                    // To keep it safe, I'll stick to the current iframe if no change, or switch to video tag if it ends in .mp4
+                    setVideoUrl(data.heroVideoUrl);
+                }
+            } catch (error) {
+                console.error("Failed to fetch settings", error);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const { scrollYProgress } = useScroll({
         target: ref,
@@ -28,12 +48,23 @@ const Hero = () => {
                 className="absolute inset-0 z-0 bg-rich-black overflow-hidden"
             >
                 <div className="absolute inset-0 pointer-events-none">
-                    <iframe
-                        src="https://www.youtube.com/embed/VN5EoMGb-xw?autoplay=1&mute=1&controls=0&loop=1&playlist=VN5EoMGb-xw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1"
-                        className="absolute top-1/2 left-1/2 w-[300%] h-[150%] -translate-x-1/2 -translate-y-1/2 object-cover opacity-80"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                    />
+                    {videoUrl.includes('youtube') ? (
+                        <iframe
+                            src={videoUrl.includes('?') ? videoUrl : `${videoUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoUrl.split('/').pop()}&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1`}
+                            className="absolute top-1/2 left-1/2 w-[300%] h-[150%] -translate-x-1/2 -translate-y-1/2 object-cover opacity-80"
+                            allow="autoplay; encrypted-media"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <video
+                            src={videoUrl}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="absolute top-1/2 left-1/2 w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 opacity-80"
+                        />
+                    )}
                 </div>
 
                 {/* Refined Luxury Gradient Overlay - Adjusted for YouTube brightness */}

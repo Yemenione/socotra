@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import SignatureDish from "@/components/SignatureDish";
 import About from "@/components/About";
 import MenuGrid from "@/components/MenuGrid";
 import Reservation from "@/components/Reservation";
@@ -12,6 +13,7 @@ export default function Home() {
     <main className="min-h-screen bg-sand-light selection:bg-rose-gold/30">
       <Navbar />
       <Hero />
+      <SignatureDish />
       <About />
       <MenuGrid />
       <Reservation />
