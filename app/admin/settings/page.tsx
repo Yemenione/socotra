@@ -252,6 +252,53 @@ export default function SettingsManagement() {
                     </div>
                 </div>
 
+                {/* Google & SEO */}
+                <div className="space-y-4 pt-4">
+                    <h3 className="font-bold text-lg text-gold-600 border-b border-sand-100 pb-2">Google & SEO</h3>
+                    <div>
+                        <label className="block text-sm font-bold text-rich-black mb-1">Google Reviews URL</label>
+                        <input
+                            name="googleReviewUrl"
+                            value={(config as any).googleReviewUrl || ''}
+                            onChange={handleChange}
+                            placeholder="https://g.page/r/..."
+                            className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Meta Title (Global)</label>
+                            <input
+                                name="seoTitle"
+                                value={(config as any).seoTitle || ''}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Meta Description</label>
+                            <textarea
+                                name="seoDescription"
+                                value={(config as any).seoDescription || ''}
+                                onChange={(e: any) => handleChange(e)}
+                                rows={2}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Keywords</label>
+                            <input
+                                name="seoKeywords"
+                                value={(config as any).seoKeywords || ''}
+                                onChange={handleChange}
+                                placeholder="yemeni food, paris, luxury dining..."
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <div className="pt-6 flex justify-end">
                     <button
                         type="submit"

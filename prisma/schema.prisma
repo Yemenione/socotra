@@ -72,8 +72,12 @@ model SiteConfig {
   aboutTitleAr    String? @default("قصتنا")
   aboutText       String? @db.Text
   aboutTextAr     String? @db.Text
-  aboutImage      String?
-  
+  // SEO & External
+  googleReviewUrl String?
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String?
+
   updatedAt       DateTime @updatedAt
 }
 

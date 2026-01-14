@@ -24,13 +24,13 @@ export default function AdminLayout({
                         <div className="w-5 h-5 flex items-center justify-center">📅</div>
                         <span className="font-bold text-sm tracking-wide">RESERVATIONS</span>
                     </Link>
-                    <Link href="/admin/menu" className="flex items-center gap-3 px-4 py-3 rounded-md text-sand-50/80 hover:bg-gold-500 hover:text-rich-black transition-all">
+                    <Link href="/admin/categories" className="flex items-center gap-3 px-4 py-3 rounded-md text-sand-50/80 hover:bg-gold-500 hover:text-rich-black transition-all">
                         <MenuIcon size={20} />
-                        <span className="font-bold text-sm tracking-wide">MENU ITEMS</span>
+                        <span className="font-bold text-sm tracking-wide">CATEGORIES</span>
                     </Link>
-                    <Link href="/admin/gallery" className="flex items-center gap-3 px-4 py-3 rounded-md text-sand-50/80 hover:bg-gold-500 hover:text-rich-black transition-all">
-                        <div className="w-5 h-5 flex items-center justify-center">📷</div>
-                        <span className="font-bold text-sm tracking-wide">GALLERY</span>
+                    <Link href="/admin/items" className="flex items-center gap-3 px-4 py-3 rounded-md text-sand-50/80 hover:bg-gold-500 hover:text-rich-black transition-all">
+                        <div className="w-5 h-5 flex items-center justify-center">🍽️</div>
+                        <span className="font-bold text-sm tracking-wide">MENU ITEMS</span>
                     </Link>
                     <div className="pt-4 mt-4 border-t border-white/10">
                         <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-md text-sand-50/80 hover:bg-gold-500 hover:text-rich-black transition-all">

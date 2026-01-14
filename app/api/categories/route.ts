@@ -12,3 +12,27 @@ export async function GET() {
         return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 });
     }
 }
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+        const { title, titleEn, titleAr, order } = body;
+
+        // Simple slug generation
+        const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+        const category = await prisma.menuCategory.create({
+            data: {
+                slug: slug + '-' + Date.now(), // Ensure uniqueness
+                title,
+                titleEn,
+                titleAr,
+                order: order || 0
+            },
+        });
+
+        return NextResponse.json(category);
+    } catch (error) {
+        console.error("Failed to create category", error);
+        return NextResponse.json({ error: 'Failed to create category' }, { status: 500 });
+    }
+}
