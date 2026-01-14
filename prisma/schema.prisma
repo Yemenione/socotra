@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
 }
 
 datasource db {
@@ -52,13 +51,29 @@ model GalleryImage {
 
 model SiteConfig {
   id              String   @id @default(cuid())
-  heroVideoUrl    String?  @default("/videos/hero-bg.mp4")
+  heroVideoUrl    String?
   instagramUrl    String?
   facebookUrl     String?
   twitterUrl      String?
   tiktokUrl       String?
   whatsappNumber  String?
   contactEmail    String?
+  logoUrl         String?  @default("/logo.png")
+  
+  // Signature Dish
+  signatureTitle    String?  @default("The Royal Mandi")
+  signatureTitleAr  String?  @default("المندي الملكي")
+  signatureDesc     String?  @db.Text
+  signatureDescAr   String?  @db.Text
+  signatureImage    String?
+
+  // About Section
+  aboutTitle      String? @default("Our Story")
+  aboutTitleAr    String? @default("قصتنا")
+  aboutText       String? @db.Text
+  aboutTextAr     String? @db.Text
+  aboutImage      String?
+  
   updatedAt       DateTime @updatedAt
 }
 

@@ -10,9 +10,14 @@ export async function GET() {
         if (!config) {
             config = await prisma.siteConfig.create({
                 data: {
-                    heroVideoUrl: "/videos/hero-bg.mp4"
+
                 }
             });
+        }
+
+        // Runtime fix: If the config has the old broken default, clear it so the frontend uses the fallback
+        if (config.heroVideoUrl === "/videos/hero-bg.mp4") {
+            config.heroVideoUrl = null;
         }
 
         return NextResponse.json(config);

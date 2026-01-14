@@ -21,8 +21,14 @@ export default function AdminLogin() {
             if (res.ok) {
                 router.push('/admin');
             } else {
-                const data = await res.json();
-                alert(data.error || 'Invalid credentials');
+                const text = await res.text();
+                try {
+                    const data = JSON.parse(text);
+                    alert(data.error || 'Invalid credentials');
+                } catch {
+                    console.error("Failed to parse JSON response:", text);
+                    alert('Server error: ' + (res.statusText || res.status));
+                }
             }
         } catch (error) {
             console.error("Login Error", error);

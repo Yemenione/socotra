@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/lib/language-context";
 
@@ -9,23 +10,40 @@ import { useLanguage } from "@/lib/language-context";
 const SignatureDish = () => {
     const { language } = useLanguage();
 
+    const [settings, setSettings] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    setSettings(data);
+                }
+            } catch (error) {
+                console.error("Failed to load settings:", error);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     const content = {
         fr: {
             sub: "NOTRE SPÉCIALITÉ",
-            title: "Le Mandi Royal",
-            desc: "Un chef-d'œuvre culinaire. Agneau tendre mariné aux épices secrètes de Socotra, cuit lentement dans un four souterrain traditionnel (Tandoor) pour une saveur fumée incomparable. Servi sur un lit de riz basmati parfumé au safran et aux raisins secs.",
+            title: settings?.signatureTitle || "Le Mandi Royal",
+            desc: settings?.signatureDesc || "Un chef-d'œuvre culinaire. Agneau tendre mariné aux épices secrètes de Socotra, cuit lentement dans un four souterrain traditionnel (Tandoor) pour une saveur fumée incomparable. Servi sur un lit de riz basmati parfumé au safran et aux raisins secs.",
             cta: "DÉCOUVRIR LE MENU"
         },
         en: {
             sub: "OUR SPECIALTY",
-            title: "The Royal Mandi",
-            desc: "A culinary masterpiece. Tender lamb marinated in secret Socotran spices, slow-cooked in a traditional underground oven (Tandoor) for an unmatched smoky flavor. Served on a bed of aromatic basmati rice with saffron and raisins.",
+            title: settings?.signatureTitle || "The Royal Mandi",
+            desc: settings?.signatureDesc || "A culinary masterpiece. Tender lamb marinated in secret Socotran spices, slow-cooked in a traditional underground oven (Tandoor) for an unmatched smoky flavor. Served on a bed of aromatic basmati rice with saffron and raisins.",
             cta: "VIEW MENU"
         },
         ar: {
             sub: "طبقنا المميز",
-            title: "المندي الملكي",
-            desc: "تحفة طهوية. لحم ضأن طري متبل بتوابل سقطرى السرية، مطهو ببطء في فرن تقليدي تحت الأرض (تندور) لنكهة مدخنة لا تضاهى. يقدم على سرير من أرز البسمتي العطري بالزعفران والزبيب.",
+            title: settings?.signatureTitleAr || "المندي الملكي",
+            desc: settings?.signatureDescAr || "تحفة طهوية. لحم ضأن طري متبل بتوابل سقطرى السرية، مطهو ببطء في فرن تقليدي تحت الأرض (تندور) لنكهة مدخنة لا تضاهى. يقدم على سرير من أرز البسمتي العطري بالزعفران والزبيب.",
             cta: "شاهد القائمة"
         }
     };
@@ -47,10 +65,9 @@ const SignatureDish = () => {
                     className="relative group"
                 >
                     <div className="relative aspect-[4/5] w-full rounded-sm overflow-hidden border border-white/10">
-                        {/* Placeholder for the Mandi Image - User needs to ensure file exists or verified path */}
                         <Image
-                            src="/images/uploaded_mandi.png"
-                            alt="Royal Mandi"
+                            src={settings?.signatureImage || "/images/uploaded_mandi.png"}
+                            alt={t.title}
                             fill
                             className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />

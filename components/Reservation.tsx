@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import LuxCard from "./LuxCard";
 import { useLanguage } from "@/lib/language-context";
@@ -18,6 +18,23 @@ const Reservation = () => {
         guests: "2"
     });
 
+    const [settings, setSettings] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    setSettings(data);
+                }
+            } catch (error) {
+                console.error("Failed to load settings:", error);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -33,9 +50,11 @@ const Reservation = () => {
             console.error("Failed to save reservation", error);
         }
 
-        // WhatsApp Logic (Always run as fallback or confirmation)
+        // WhatsApp Logic (Dynamic)
+        const phone = settings?.whatsappNumber || "33178990678"; // Fallback
+        const cleanPhone = phone.replace(/\D/g, ''); // Ensure only numbers
         const message = `Hello, I would like to reserve a table for ${formData.guests} people on ${formData.date} at ${formData.time}. Name: ${formData.name}`;
-        const whatsappUrl = `https://wa.me/33178990678?text=${encodeURIComponent(message)}`;
+        const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     };
 
@@ -90,12 +109,12 @@ const Reservation = () => {
                             transition={{ duration: 0.6, delay: 0.3 }}
                             className="flex flex-col gap-6"
                         >
-                            <a href="tel:+33178990678" className={cn(
+                            <a href={`tel:${settings?.whatsappNumber || "+33178990678"}`} className={cn(
                                 "flex items-center gap-6 group justify-center",
                                 language === 'ar' ? "lg:justify-end flex-row-reverse" : "lg:justify-start"
                             )}>
                                 <span className="w-12 h-12 rounded-full border border-gold-500/30 flex items-center justify-center text-xl group-hover:bg-gold-500 group-hover:text-rich-black transition-all duration-300">📞</span>
-                                <span className="text-xl font-heading font-bold text-sand-50 group-hover:text-gold-400 transition-colors">{t.phone}</span>
+                                <span className="text-xl font-heading font-bold text-sand-50 group-hover:text-gold-400 transition-colors">{settings?.whatsappNumber || t.phone}</span>
                             </a>
                             <div className={cn(
                                 "flex items-center gap-6 group justify-center",

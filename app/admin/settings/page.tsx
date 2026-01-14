@@ -11,7 +11,15 @@ export default function SettingsManagement() {
         twitterUrl: '',
         tiktokUrl: '',
         whatsappNumber: '',
-        contactEmail: ''
+        contactEmail: '',
+        signatureTitle: "The Royal Mandi",
+        signatureTitleAr: "المندي الملكي",
+        signatureDesc: "",
+        signatureDescAr: "",
+        aboutTitle: "Our Story",
+        aboutTitleAr: "قصتنا",
+        aboutText: "",
+        aboutTextAr: ""
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -37,7 +45,7 @@ export default function SettingsManagement() {
         fetchSettings();
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setConfig({ ...config, [e.target.name]: e.target.value });
     };
 
@@ -149,6 +157,96 @@ export default function SettingsManagement() {
                                 onChange={handleChange}
                                 placeholder="contact@socotra.com"
                                 className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Signature Dish Section */}
+                <div className="space-y-4 pt-4">
+                    <h3 className="font-bold text-lg text-gold-600 border-b border-sand-100 pb-2">Signature Dish</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-bold text-rich-black mb-1">Title (English)</label>
+                            <input
+                                name="signatureTitle"
+                                value={config.signatureTitle}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-rich-black mb-1">Title (Arabic)</label>
+                            <input
+                                name="signatureTitleAr"
+                                value={config.signatureTitleAr}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none text-right"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Description (English)</label>
+                            <textarea
+                                name="signatureDesc"
+                                value={config.signatureDesc}
+                                onChange={(e: any) => handleChange(e)}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Description (Arabic)</label>
+                            <textarea
+                                name="signatureDescAr"
+                                value={config.signatureDescAr}
+                                onChange={(e: any) => handleChange(e)}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none text-right"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* About Section */}
+                <div className="space-y-4 pt-4">
+                    <h3 className="font-bold text-lg text-gold-600 border-b border-sand-100 pb-2">About Section</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-bold text-rich-black mb-1">Title (English)</label>
+                            <input
+                                name="aboutTitle"
+                                value={config.aboutTitle}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-rich-black mb-1">Title (Arabic)</label>
+                            <input
+                                name="aboutTitleAr"
+                                value={config.aboutTitleAr}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none text-right"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Text (English)</label>
+                            <textarea
+                                name="aboutText"
+                                value={config.aboutText}
+                                onChange={(e: any) => handleChange(e)}
+                                rows={4}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-bold text-rich-black mb-1">Text (Arabic)</label>
+                            <textarea
+                                name="aboutTextAr"
+                                value={config.aboutTextAr}
+                                onChange={(e: any) => handleChange(e)}
+                                rows={4}
+                                className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none text-right"
                             />
                         </div>
                     </div>
