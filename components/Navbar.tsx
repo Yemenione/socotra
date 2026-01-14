@@ -17,6 +17,11 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { language, setLanguage, dir } = useLanguage();
     const t = translations[language].nav;
+    const [settings, setSettings] = useState<any>(null);
+
+    useEffect(() => {
+        fetch('/api/settings').then(res => res.json()).then(data => setSettings(data));
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -222,11 +227,18 @@ const Navbar = () => {
                                         <p>123 Avenue des Champs-Élysées</p>
                                     </div>
                                     <div className="flex gap-4">
-                                        {['Instagram', 'Twitter', 'Facebook'].map((social) => (
-                                            <a key={social} href="#" className="text-xs font-bold text-gold-500 uppercase tracking-wider hover:text-white transition-colors">
-                                                {social}
-                                            </a>
-                                        ))}
+                                        {settings?.instagramUrl && (
+                                            <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gold-500 uppercase tracking-wider hover:text-white transition-colors">Instagram</a>
+                                        )}
+                                        {settings?.twitterUrl && (
+                                            <a href={settings.twitterUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gold-500 uppercase tracking-wider hover:text-white transition-colors">Twitter (X)</a>
+                                        )}
+                                        {settings?.facebookUrl && (
+                                            <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gold-500 uppercase tracking-wider hover:text-white transition-colors">Facebook</a>
+                                        )}
+                                        {settings?.tiktokUrl && (
+                                            <a href={settings.tiktokUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gold-500 uppercase tracking-wider hover:text-white transition-colors">TikTok</a>
+                                        )}
                                     </div>
                                 </div>
                             </div>

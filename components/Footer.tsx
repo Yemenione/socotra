@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Facebook, Instagram, Phone, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,12 @@ const Footer = () => {
     const t = translations[language].footer;
     const navT = translations[language].nav;
     const resT = translations[language].reservation;
+
+    const [settings, setSettings] = useState<any>(null);
+
+    useEffect(() => {
+        fetch('/api/settings').then(res => res.json()).then(data => setSettings(data));
+    }, []);
 
     return (
         <footer className="bg-rich-black text-sand-50 pt-20 pb-10 rounded-t-[3rem] mt-[-2rem] relative z-30" dir={dir}>
@@ -25,12 +32,16 @@ const Footer = () => {
                         {t.description}
                     </p>
                     <div className={cn("flex gap-4", language === 'ar' ? "justify-end md:justify-start" : "")}>
-                        <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold hover:text-brown transition-all">
-                            <Instagram size={18} />
-                        </a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold hover:text-brown transition-all">
-                            <Facebook size={18} />
-                        </a>
+                        {settings?.instagramUrl && (
+                            <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold hover:text-brown transition-all">
+                                <Instagram size={18} />
+                            </a>
+                        )}
+                        {settings?.facebookUrl && (
+                            <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold hover:text-brown transition-all">
+                                <Facebook size={18} />
+                            </a>
+                        )}
                     </div>
                 </div>
 
@@ -55,8 +66,14 @@ const Footer = () => {
                         </li>
                         <li className={cn("flex gap-3 items-center", language === 'ar' ? "flex-row-reverse" : "")}>
                             <Phone size={20} className="text-gold shrink-0" />
-                            <span>{resT.phone}</span>
+                            <span>{settings?.whatsappNumber || resT.phone}</span>
                         </li>
+                        {settings?.contactEmail && (
+                            <li className={cn("flex gap-3 items-center", language === 'ar' ? "flex-row-reverse" : "")}>
+                                <span className="text-gold text-lg">@</span>
+                                <span>{settings.contactEmail}</span>
+                            </li>
+                        )}
                         <li className="pt-4 border-t border-white/10 mt-4">
                             <span className="block text-gold text-sm font-bold uppercase tracking-widest mb-1">{t.openDaily}</span>
                             12:00 PM - 11:00 PM
