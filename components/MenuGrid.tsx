@@ -2,119 +2,141 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import LuxCard from "./LuxCard";
+import { menuData, MenuCategory, MenuItem } from "@/lib/menu-data";
 import Image from "next/image";
-import { menuData } from "@/lib/menu-data";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
+import { translations } from "@/lib/translations";
 
 const MenuGrid = () => {
-    const [activeCategory, setActiveCategory] = useState("starters");
+    const [activeCategory, setActiveCategory] = useState<string>("starters");
+    const { language, dir } = useLanguage();
+    const t = translations[language].menu;
 
-    // Find the active category object
-    const activeCategoryData = menuData.find(c => c.id === activeCategory) || menuData[0];
+    // Helper to get localized text
+    const getCategoryTitle = (cat: MenuCategory) => {
+        if (language === 'ar') return cat.titleAr;
+        if (language === 'en') return cat.titleEn;
+        return cat.title;
+    };
+
+    const getItemName = (item: MenuItem) => {
+        if (language === 'ar') return item.nameAr;
+        if (language === 'en') return item.nameEn;
+        return item.name;
+    };
+
+    const getItemDesc = (item: MenuItem) => {
+        if (language === 'ar') {
+            return item.descriptionEn || item.description;
+        }
+        if (language === 'en') return item.descriptionEn;
+        return item.description;
+    };
 
     return (
-        <section id="menu" className="py-24 bg-sand-50 relative">
-            {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gold-500/5 rounded-full blur-[100px] pointer-events-none" />
+        <section id="menu" className="py-24 bg-rich-black relative overflow-hidden" dir={dir}>
+            {/* Background Texture */}
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
 
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center mb-16">
-                    <span className="text-gold-500 text-xs font-bold tracking-[0.3em] uppercase mb-4 block">
-                        Gastronomy
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-heading font-black text-rich-black mb-6">
-                        Curated Menu
-                    </h2>
-                    <p className="max-w-2xl mx-auto text-rich-black/60 font-light text-lg">
-                        A culinary journey through the ancient traditions of Yemen, refined for the modern palate.
-                    </p>
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+
+                {/* Section Header */}
+                <div className="text-center mb-16 space-y-4">
+                    <motion.span
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        className="text-gold-400 uppercase tracking-[0.3em] text-xs font-bold"
+                    >
+                        {t.title}
+                    </motion.span>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="text-4xl md:text-5xl font-heading font-black text-sand-50"
+                    >
+                        {t.subtitle}
+                    </motion.h2>
+                    <div className="h-1 w-24 bg-gold-500 mx-auto rounded-full mt-6" />
                 </div>
 
-                {/* Categories - Scrollable on mobile */}
-                <div className="flex flex-wrap justify-center gap-4 mb-16 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
+                {/* Category Navigation */}
+                <div className="flex flex-wrap justify-center gap-4 mb-16">
                     {menuData.map((category) => (
                         <button
                             key={category.id}
                             onClick={() => setActiveCategory(category.id)}
-                            className={`relative px-6 py-3 rounded-full text-sm tracking-wider uppercase transition-all duration-500 ${activeCategory === category.id
-                                    ? "text-rich-black font-bold"
-                                    : "text-rich-black/50 hover:text-rich-black"
-                                }`}
-                        >
-                            <span className="relative z-10">{category.title}</span>
-                            {activeCategory === category.id && (
-                                <motion.div
-                                    layoutId="activeTab"
-                                    className="absolute inset-0 bg-gold-400/20 border border-gold-500/30 rounded-full"
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                />
+                            className={cn(
+                                "px-6 py-2 rounded-full border border-white/10 text-sm font-bold uppercase tracking-wider transition-all duration-300",
+                                activeCategory === category.id
+                                    ? "bg-gold-500 text-rich-black shadow-lg shadow-gold-500/20 scale-105"
+                                    : "text-sand-100/60 hover:text-sand-50 hover:border-gold-500/50"
                             )}
+                        >
+                            {getCategoryTitle(category)}
                         </button>
                     ))}
                 </div>
 
-                {/* Grid */}
+                {/* Menu Grid */}
                 <motion.div
                     layout
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-12"
                 >
                     <AnimatePresence mode="popLayout">
-                        {activeCategoryData.items.map((item, index) => (
-                            <LuxCard key={item.name} delay={index * 0.05} className="h-full flex flex-col p-0 bg-white shadow-lux-sm border-white/20 hover:border-gold-500/50">
-                                {/* Image Area - Styled as per "Luxury" request */}
-                                <div className="relative h-64 overflow-hidden">
+                        {menuData.find(c => c.id === activeCategory)?.items.map((item, index) => (
+                            <motion.div
+                                layout
+                                key={item.name}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
+                                className="group relative bg-white/5 border border-white/5 rounded-2xl p-4 md:p-6 hover:bg-white/10 transition-colors flex gap-6 items-center overflow-hidden"
+                            >
+                                {/* Hover Glow Effect */}
+                                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-gold-500/10 rounded-full blur-3xl group-hover:bg-gold-500/20 transition-all duration-500" />
+
+                                {/* Image */}
+                                <div className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-full overflow-hidden border-2 border-white/10 shadow-lg group-hover:border-gold-400/50 transition-colors">
                                     <Image
                                         src={item.image}
                                         alt={item.name}
                                         fill
-                                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                                        className="object-cover transform group-hover:scale-110 transition-transform duration-700"
                                     />
-                                    {/* Gradient Overlay for text readability if needed, though text is below */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                                    {item.featured && (
-                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-gold-500/30 shadow-lg z-10">
-                                            <span className="text-[10px] font-bold text-gold-600 uppercase tracking-widest flex items-center gap-1">
-                                                ★ Signature
-                                            </span>
-                                        </div>
-                                    )}
                                 </div>
 
                                 {/* Content */}
-                                <div className="p-8 flex flex-col flex-grow relative bg-white">
-                                    {/* Header: Name & Price */}
-                                    <div className="flex justify-between items-start border-b border-sand-200 pb-4 mb-4">
-                                        <div>
-                                            <h3 className="font-heading text-xl font-bold text-rich-black group-hover:text-gold-600 transition-colors duration-300">
-                                                {item.name}
-                                            </h3>
-                                            <p className="font-arabic text-lg text-gold-500 mt-1">{item.arabicName}</p>
-                                        </div>
-                                        <div className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold-600 to-gold-400">
+                                <div className="flex-1 min-w-0 z-10">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h3 className={cn(
+                                            "text-xl font-bold text-sand-50 truncate pr-4 group-hover:text-gold-300 transition-colors",
+                                            language === 'ar' && "font-serif text-2xl"
+                                        )}>
+                                            {getItemName(item)}
+                                        </h3>
+                                        <span className="text-gold-400 font-bold text-lg whitespace-nowrap">
                                             {item.price}
-                                        </div>
+                                        </span>
                                     </div>
-
-                                    {/* Description */}
-                                    <p className="text-rich-black/60 text-sm leading-relaxed font-light mb-6 flex-grow">
-                                        {item.description}
+                                    <p className={cn(
+                                        "text-sand-100/60 text-sm leading-relaxed line-clamp-2",
+                                        language === 'ar' && "text-right"
+                                    )}>
+                                        {getItemDesc(item)}
                                     </p>
-
-                                    <div className="pt-2 mt-auto">
-                                        <button className="text-xs font-bold uppercase tracking-[0.2em] text-rich-black/40 group-hover:text-gold-600 transition-colors flex items-center gap-2">
-                                            Order Now <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
-                                        </button>
-                                    </div>
                                 </div>
-                            </LuxCard>
+                            </motion.div>
                         ))}
                     </AnimatePresence>
                 </motion.div>
 
-                {/* Decoration at bottom */}
-                <div className="text-center mt-16 opacity-50">
-                    <span className="text-gold-500 text-2xl">✦</span>
+                {/* Download Menu Button (Optional) */}
+                <div className="mt-20 text-center">
+                    <button className="text-sand-50 border-b border-gold-500 pb-1 hover:text-gold-400 transition-colors text-sm font-bold uppercase tracking-widest">
+                        {language === 'fr' ? "Télécharger le menu complet" : language === 'ar' ? "تحميل القائمة الكاملة" : "Download Full Menu"}
+                    </button>
                 </div>
             </div>
         </section>

@@ -46,17 +46,21 @@ export const metadata: Metadata = {
   },
 };
 
+import { LanguageProvider } from "@/lib/language-context";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${playfair.variable} ${inter.variable} ${tajawal.variable} antialiased bg-sand-light text-brown selection:bg-gold/30 selection:text-brown`}
       >
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,17 +1,20 @@
+
 export type MenuItem = {
-    name: string;
-    description: string;
+    name: string; // French
+    nameEn: string; // English
+    nameAr: string; // Arabic (used for display)
+    description: string; // French
+    descriptionEn: string; // English
     price: string;
     image: string;
     featured?: boolean;
-    arabicName: string;
-    nameAr?: string; // keeping for compatibility if needed, but we will use arabicName in components
 };
 
 export type MenuCategory = {
     id: string;
-    title: string;
-    arabicTitle: string;
+    title: string; // French
+    titleEn: string; // English
+    titleAr: string; // Arabic
     items: MenuItem[];
 };
 
@@ -19,165 +22,141 @@ export type MenuCategory = {
 const fmt = (p: number) => `${p.toFixed(2)}€`;
 const placeholderImg = "/logo.png"; // Using logo as placeholder as per original data
 
+// Helper to quickly create items (reduced boilerplate)
+const createItem = (
+    name: string, nameEn: string, nameAr: string,
+    price: number,
+    desc: string, descEn: string,
+    img: string = placeholderImg,
+    featured = false
+): MenuItem => ({
+    name, nameEn, nameAr,
+    price: fmt(price),
+    description: desc, descriptionEn: descEn,
+    image: img,
+    featured
+});
+
 export const menuData: MenuCategory[] = [
     {
         id: "starters",
         title: "Entrées & Salades",
-        arabicTitle: "المقبلات والسلطات",
+        titleEn: "Starters & Salads",
+        titleAr: "المقبلات والسلطات",
         items: [
-            { name: "Salade Arabe", arabicName: "سلطة عربية", price: fmt(4.99), description: "Tomate, Concombre, Laitue, Menthe, Citron", image: placeholderImg },
-            { name: "Salad de Yémen", arabicName: "سلطة يمنية", price: fmt(11.99), description: "Tomate, Oignon, Concombre, Carotte, Coriandre", image: placeholderImg },
-            { name: "Salad de Sanaa", arabicName: "سلطة صنعاء", price: fmt(11.99), description: "Tomate, Oignon, Concombre, Carotte, Coriandre, Boulettes de viande, sauce piquante", image: placeholderImg },
-            { name: "Salade au Yaourt", arabicName: "سلطة بالزبادي", price: fmt(4.99), description: "Salade fraîche mélangée avec yaourt maison et herbes", image: placeholderImg },
-            { name: "Concombre au Yaourt", arabicName: "خيار بالزبادي", price: fmt(4.99), description: "Tzatziki yéménite: concombre, yaourt, menthe et ail", image: placeholderImg },
-            { name: "Chafoute", arabicName: "شفوت", price: fmt(4.99), description: "Lahouh (Galette) émietté, Lait fermenté, Tomate, Oignon et herbes", image: placeholderImg },
-            { name: "Houmous", arabicName: "حمص", price: fmt(4.99), description: "Purée de pois chiches, Tahini, huile d'olives et cumin", image: placeholderImg },
-            { name: "Mutabbal", arabicName: "متبل", price: fmt(4.99), description: "Caviar d'aubergine grillées", image: placeholderImg },
-            { name: "Samoussa (3 pièces)", arabicName: "سمبوسة", price: fmt(4.99), description: "Viande Hachée, Légumes ou Fromage", image: placeholderImg },
-            { name: "Mix Socotra", arabicName: "مزيج سقطرى", price: fmt(9.99), description: "Assortiment d'entrées: houmous, mutabbal, salade et pain", image: placeholderImg },
+            createItem("Salade Arabe", "Arabic Salad", "سلطة عربية", 4.99, "Tomate, Concombre, Laitue, Menthe, Citron", "Tomato, Cucumber, Lettuce, Mint, Lemon"),
+            createItem("Salade Olive", "Olive Salad", "سلطة زيتون", 4.99, "Mélange d'olives marinées aux épices", "Mixed olives marinated with spices"),
+            createItem("Salade Roquette", "Rocket Salad", "سلطة جرجير", 4.99, "Roquette, Tomate, Oignon, Citron", "Arugula, Tomato, Onion, Lemon"),
+            createItem("Salade au Thon", "Tuna Salad", "سلطة تونة", 6.99, "Thon, Légumes frais, Huile d'olive", "Tuna, Fresh vegetables, Olive oil"),
+            createItem("Salade Grecque", "Greek Salad", "سلطة يونانية", 6.99, "Feta, Olives, Tomate, Concombre", "Feta, Olives, Tomato, Cucumber"),
+            createItem("Houmous", "Hummus", "حمص", 5.99, "Pois chiches, Tahini, Citron, Huile d'olive", "Chickpeas, Tahini, Lemon, Olive oil", placeholderImg, true),
+            createItem("Moutabal", "Mutabal", "متبل", 5.99, "Aubergine grillée, Tahini, Yaourt", "Grilled Eggplant, Tahini, Yogurt"),
+            createItem("Baba Ghanouj", "Baba Ghanoush", "بابا غنوج", 6.99, "Aubergine fumée, Poivrons, Huile d'olive", "Smoked Eggplant, Peppers, Olive oil"),
+            createItem("Feuilles de Vigne", "Grape Leaves", "ورق عنب", 5.99, "Riz, Herbes, Cuit à la vapeur (5 pièces)", "Rice, Herbs, Steamed (5 pieces)"),
+            createItem("Kibbeh", "Kibbeh", "كبة", 6.99, "Boulettes de viande et blé concassé (3 pièces)", "Meat and bulgur balls (3 pieces)"),
+            createItem("Samboussek Fromage", "Cheese Samosa", "سمبوسة جبن", 5.99, "Pâte croustillante farcie au fromage (4 pièces)", "Crispy pastry stuffed with cheese (4 pieces)"),
+            createItem("Samboussek Viande", "Meat Samosa", "سمبوسة لحم", 5.99, "Pâte croustillante farcie à la viande (4 pièces)", "Crispy pastry stuffed with meat (4 pieces)"),
+            createItem("Frites", "French Fries", "بطاطس مقلية", 3.99, "Pommes de terre dorées et croustillantes", "Golden and crispy potatoes"),
+            createItem("Riz", "Rice", "أرز", 3.50, "Riz basmati parfumé aux épices", "Basmati rice scented with spices"),
+            createItem("Pain Maison", "House Bread", "خبز ملوح", 1.50, "Pain traditionnel yéménite cuit au four tandoor", "Traditional Yemeni bread baked in tandoor oven", placeholderImg, true),
+            createItem("Assiette Mixte", "Mixed Platter", "مقبلات مشكلة", 14.99, "Houmous, Moutabal, Baba Ghanouj, Salade, Feuilles de vigne", "Hummus, Mutabal, Baba Ghanoush, Salad, Grape Leaves"),
         ]
     },
     {
-        id: "meat",
-        title: "Les Plats de Viande",
-        arabicTitle: "أطباق اللحوم",
+        id: "viandes",
+        title: "Viandes",
+        titleEn: "Meats",
+        titleAr: "اللحوم",
         items: [
-            { name: "Mandi d'Agneau", arabicName: "لحم مندي", price: fmt(19.99), description: "Agneau grillé au four avec riz basmati parfumé et épices yéménites traditionnelles", image: placeholderImg },
-            { name: "Hanid d'Agneau", arabicName: "لحم حنيذ", price: fmt(20.99), description: "Viande d'agneau cuite lentement au four traditionnel, servie avec riz", image: placeholderImg },
-            { name: "Madfoun d'Agneau", arabicName: "لحم مدفون", price: fmt(21.99), description: "Agneau enterré et cuit à l'étouffée avec épices et riz basmati", image: placeholderImg },
-            { name: "Barma d'Agneau", arabicName: "لحم برمة", price: fmt(21.99), description: "Ragoût d'agneau mijoté avec légumes et épices dans un pot traditionnel", image: placeholderImg },
-            { name: "Kabsseh d'Agneau", arabicName: "لحم كبسة", price: fmt(25.99), description: "Viande pressée avec riz kabsa épicé, noix et raisins secs", image: placeholderImg },
-            { name: "Fahsa de Veau", arabicName: "فحسة", price: fmt(19.99), description: "Ragoût épicé d'agneau servi dans un plat en pierre chaud avec pain", image: placeholderImg },
-            { name: "Aqda de Veau", arabicName: "عقدة", price: fmt(19.99), description: "Morceaux d'agneau grillés avec oignons, tomates et épices", image: placeholderImg },
-            { name: "Saltah", arabicName: "سلتة", price: fmt(13.99), description: "Viande hachée mijotée dans une sauce tomate et légumes fondants, servie dans un plat en pierre chaude, accompagnée de pain fait maison", image: placeholderImg },
-            { name: "Mix Viande et Foie", arabicName: "مشكل لحم وكبدة", price: fmt(15.99), description: "Assortiment de viande tendre et foie d'agneau grillés", image: placeholderImg },
-            { name: "Kebdah", arabicName: "كبدة", price: fmt(13.99), description: "Foie d'agneau grillé mariné aux épices yéménites", image: placeholderImg },
-            { name: "Lahme Sogar", arabicName: "لحمة صغار", price: fmt(13.99), description: "Petits morceaux d'agneau tendres grillés avec épices", image: placeholderImg },
+            createItem("Kabsa Agneau", "Lamb Kabsa", "كبسة لحم", 16.99, "Riz basmati, Agneau tendre, Épices Kabsa", "Basmati rice, Tender lamb, Kabsa spices", placeholderImg, true),
+            createItem("Mandi Agneau", "Lamb Mandi", "مندي لحم", 17.99, "L'authentique, cuit à l'étouffée sous terre", "The authentic, slow-cooked underground"),
+            createItem("Haneeth Agneau", "Lamb Haneeth", "حنيذ لحم", 18.99, "Agneau rôti lentement, très tendre", "Slow-roasted lamb, very tender"),
+            createItem("Zorbian Agneau", "Lamb Zurbian", "زربيان لحم", 17.99, "Riz parfumé au safran, Agneau, Pommes de terre", "Saffron scented rice, Lamb, Potatoes"),
+            createItem("Madghout Agneau", "Lamb Madghout", "مضغوط لحم", 16.99, "Cuit sous pression, riz très fondant", "Pressure cooked, very melting rice"),
+            createItem("Burmah Agneau", "Lamb Burmah", "برمة لحم", 15.99, "Ragoût d'agneau traditionnel dans son bouillon", "Traditional lamb stew in its broth"),
         ]
     },
     {
-        id: "chicken",
-        title: "Les Plats de Poulet",
-        arabicTitle: "أطباق الدجاج",
+        id: "poulets",
+        title: "Poulets",
+        titleEn: "Chicken",
+        titleAr: "الدجاج",
         items: [
-            { name: "Mandi de Poulet", arabicName: "دجاج مندي", price: fmt(12.99), description: "Poulet tendre cuit à la vapeur de son riz parfumé, puis doré au four traditionnel", image: placeholderImg },
-            { name: "Madbi de Poulet", arabicName: "دجاج مظبي", price: fmt(13.99), description: "Poulet mariné et grillé sur pierre chaude, offrant une saveur authentique et une texture juteuse, servi avec un riz délicatement parfumé", image: placeholderImg },
-            { name: "Madfoun de Poulet", arabicName: "دجاج مدفون", price: fmt(13.99), description: "Poulet cuit à l'étouffée, accompagné de pommes de terre et d'oignons fondants, servi avec un riz parfumé", image: placeholderImg },
-            { name: "Aqdah de Poulet", arabicName: "دجاج عقدة", price: fmt(13.99), description: "Emincés de Poulet fondants, sautés avec des oignons, tomates et poivrons, servis avec un riz parfumé ou un pain fait maison", image: placeholderImg },
-            { name: "Mix Légumes et Poulet", arabicName: "مشكل خضار ودجاج", price: fmt(16.99), description: "Assortiment de légumes grillés avec poulet mariné", image: placeholderImg },
-            { name: "Poulet Entier", arabicName: "دجاج كامل", price: fmt(20.99), description: "Poulet entier avec du riz", featured: true, image: placeholderImg },
-            { name: "Poulet aux Légumes", arabicName: "دجاج بالخضار", price: fmt(16.99), description: "Poulet tendre mariné aux épices, accompagné de légumes grillés colorés et délicatement parfumés", image: placeholderImg },
-            { name: "Grillé Poulet", arabicName: "دجاج مشوي", price: fmt(13.99), description: "Poitrines de poulet grillées marinées aux épices yéménites avec riz", image: placeholderImg },
+            createItem("Kabsa Poulet", "Chicken Kabsa", "كبسة دجاج", 12.99, "Demi-poulet, Riz basmati, Épices", "Half chicken, Basmati rice, Spices"),
+            createItem("Mandi Poulet", "Chicken Mandi", "مندي دجاج", 13.99, "Demi-poulet fumé, Riz Mandi", "Smoked half chicken, Mandi rice", placeholderImg, true),
+            createItem("Haneeth Poulet", "Chicken Haneeth", "حنيذ دجاج", 14.99, "Demi-poulet rôti aux épices spéciales", "Half chicken roasted with special spices"),
+            createItem("Zorbian Poulet", "Chicken Zurbian", "زربيان دجاج", 14.99, "Demi-poulet, Riz safran, Yaourt", "Half chicken, Saffron rice, Yogurt"),
+            createItem("Madghout Poulet", "Chicken Madghout", "مضغوط دجاج", 13.99, "Demi-poulet cuit sous pression avec le riz", "Half chicken pressure cooked with rice"),
         ]
     },
     {
-        id: "fish",
-        title: "Les Plats de la Mer",
-        arabicTitle: "أطباق البحر",
+        id: "poissons",
+        title: "Poissons",
+        titleEn: "Fish",
+        titleAr: "الأسماك",
         items: [
-            { name: "Poisson Moufa", arabicName: "سمك موفى", price: fmt(18.99), description: "Poisson frais délicatement grillé au four traditionnel, accompagné de riz parfumé et de quartiers de citron", featured: true, image: placeholderImg },
-            { name: "Pain Poisson Dattes", arabicName: "سمك بالخبز والتمر", price: fmt(20.99), description: "Poisson cuit dans le pain yéménite avec dates et fenugrec", image: placeholderImg },
-            { name: "Pain Poisson Banane", arabicName: "سمك بالخبز والموز", price: fmt(20.99), description: "Poisson cuit dans le pain yéménite avec bananes et fenugrec", image: placeholderImg },
-            { name: "Crevettes Grillées", arabicName: "جمبري مشوي", price: fmt(18.99), description: "Crevettes fraîches grillées à la perfection, subtilement relevées aux épices, servies avec un riz", featured: true, image: placeholderImg },
-            { name: "Crevettes Cuites", arabicName: "جمبري مطبوخ", price: fmt(18.99), description: "Crevettes cuites avec oignons, tomates et poivrons dans une sauce spéciale", image: placeholderImg },
-            { name: "Aqda de Crevettes", arabicName: "جمبري عقدة", price: fmt(18.99), description: "Crevettes sautées avec oignons, tomates et légumes épicés", image: placeholderImg },
+            createItem("Dorade Royale", "Sea Bream", "سمك دنيس", 18.99, "Grillée au four avec épices et citron", "Oven grilled with spices and lemon"),
+            createItem("Bar", "Sea Bass", "سمك قاروص", 19.99, "Poisson entier grillé, saveur délicate", "Whole grilled fish, delicate flavor"),
+            createItem("Saumon", "Salmon", "سلمون", 17.99, "Pavé de saumon grillé ou au four", "Grilled or baked salmon steak"),
+            createItem("Crevettes Grillées", "Grilled Shrimp", "روبيان مشوي", 16.99, "Crevettes marinées à l'ail et citron", "Shrimp marinated with garlic and lemon"),
+            createItem("Sayadieh Poisson", "Fish Sayadieh", "صيادية سمك", 15.99, "Riz brun aux oignons caramélisés, Poisson", "Brown rice with caramelized onions, Fish"),
         ]
     },
     {
-        id: "traditional",
-        title: "Plats Traditionnels",
-        arabicTitle: "الأطباق التقليدية",
+        id: "specialities",
+        title: "Spécialités Yéménites",
+        titleEn: "Yemeni Specialities",
+        titleAr: "المأكولات اليمنية الشعبية",
         items: [
-            { name: "Lahsah", arabicName: "لحسة", price: fmt(12.99), description: "Oeufs au fromage", image: placeholderImg },
-            { name: "Mix de Légumes", arabicName: "مشكل خضار", price: fmt(12.99), description: "Assortiment coloré de légumes grillés: aubergines, courgettes, poivrons et oignons", image: placeholderImg },
-            { name: "Foul Medra", arabicName: "فول مدرع", price: fmt(10.99), description: "Fèves savoureuses mijotées dans plat en pierre cuite avec oignons, tomates et coriandre fraîche", image: placeholderImg },
-            { name: "Foul Medra aux Œufs", arabicName: "فول مدرع بالبيض", price: fmt(11.99), description: "Fèves medra accompagnées d'œufs au plat", image: placeholderImg },
-            { name: "Foul Medra au Tahini", arabicName: "فول مدرع بالطحينة", price: fmt(11.99), description: "Fèves medra avec sauce tahini crémeuse", image: placeholderImg },
-            { name: "Foul Medra au Fromage", arabicName: "فول مدرع بالجبن", price: fmt(11.99), description: "Fèves medra gratinées avec fromage fondu", image: placeholderImg },
-            { name: "Haricots Secs", arabicName: "فاصوليا يابسة", price: fmt(12.99), description: "Haricots blancs mijotés avec sauce tomate et epices", image: placeholderImg },
-            { name: "Haricots Medra", arabicName: "فاصوليا مدرع", price: fmt(11.99), description: "Haricots cuits dans un plat en pierre cuite avec oignons, tomates, coriandre", image: placeholderImg },
-            { name: "Haricots aux Œufs", arabicName: "فاصوليا بالبيض", price: fmt(11.99), description: "Haricots medra avec œufs au plat", image: placeholderImg },
-            { name: "Haricots au Tahini", arabicName: "فاصوليا بالطحينة", price: fmt(11.99), description: "Haricots medra avec sauce tahini onctueuse", image: placeholderImg },
-            { name: "Haricots au Fromage", arabicName: "فاصوليا بالجبن", price: fmt(11.99), description: "Haricots medra gratinés au fromage", image: placeholderImg },
-            { name: "Petits Pois Medra", arabicName: "بازلاء مدرع", price: fmt(10.99), description: "Petits pois cuits avec oignons, tomates et coriandre", image: placeholderImg },
-            { name: "Petits Pois aux Œufs", arabicName: "بازلاء بالبيض", price: fmt(11.99), description: "Petits pois medra accompagnés d'œufs au plat", image: placeholderImg },
-            { name: "Petits Pois au Tahini", arabicName: "بازلاء بالطحينة", price: fmt(11.99), description: "Petits pois medra avec sauce tahini", image: placeholderImg },
-            { name: "Petits Pois au Fromage", arabicName: "بازلاء بالجبن", price: fmt(11.99), description: "Petits pois medra gratinés au fromage", image: placeholderImg },
-            { name: "Shakshouka", arabicName: "شكشوكة", price: fmt(12.99), description: "Œufs pochés dans sauce tomate épicée avec poivrons", featured: true, image: placeholderImg },
-            { name: "Œufs au Plat", arabicName: "بيض مقلي", price: fmt(11.99), description: "Œufs au plat servis avec pain frais (2 œufs)", image: placeholderImg },
-        ]
-    },
-    {
-        id: "fattah",
-        title: "Plats Fattah",
-        arabicTitle: "أطباق الفتة",
-        items: [
-            { name: "Fatta au Bouillon (Petit)", arabicName: "فتة بالمرق صغير", price: fmt(8.99), description: "Pain trempé dans bouillon épicé", image: placeholderImg },
-            { name: "Fatta au Bouillon (Grand)", arabicName: "فتة بالمرق كبير", price: fmt(10.99), description: "Pain trempé dans bouillon épicé", image: placeholderImg },
-            { name: "Fatta aux Œufs (Petit)", arabicName: "فتة بالبيض صغير", price: fmt(9.99), description: "Fatta aux œufs enrichie de lait frais", image: placeholderImg },
-            { name: "Fatta aux Œufs (Grand)", arabicName: "فتة بالبيض كبير", price: fmt(10.99), description: "Fatta aux œufs enrichie de lait frais", image: placeholderImg },
-            { name: "Fatta à la Viande", arabicName: "فتة باللحم", price: fmt(10.99), description: "Pain en couches avec agneau, bouillon, yaourt", featured: true, image: placeholderImg },
-        ]
-    },
-    {
-        id: "bread",
-        title: "Les Accompagnements",
-        arabicTitle: "المرافقات",
-        items: [
-            { name: "Bouillon", arabicName: "مرق", price: fmt(1.99), description: "Bouillon traditionnel", image: placeholderImg },
-            { name: "Pain Frais", arabicName: "خبز طازج", price: fmt(2.99), description: "Pain frais fait maison", image: placeholderImg },
-            { name: "Pain Rustique Socotra", arabicName: "خبز سقطرى ريفي", price: fmt(2.99), description: "Pain rustique traditionnel", image: placeholderImg },
-            { name: "Pain Classique", arabicName: "خبز عادي", price: fmt(1.99), description: "Pain classique", image: placeholderImg },
-            { name: "Riz", arabicName: "أرز", price: fmt(2.99), description: "Riz basmati parfumé", image: placeholderImg },
-            { name: "Frites", arabicName: "بطاطس مقلية", price: fmt(3.99), description: "Frites croustillantes", image: placeholderImg },
-            { name: "Salsa au Fromage", arabicName: "صلصة بالجبن", price: fmt(2.99), description: "Sauce au fromage maison", image: placeholderImg },
-        ]
-    },
-    {
-        id: "offers",
-        title: "Les Offres de Viandes",
-        arabicTitle: "عروض اللحوم",
-        items: [
-            { name: "Mouton Entier", arabicName: "خروف كامل", price: fmt(250.00), description: "Agneau entier grillé au four traditionnel (10-15 personnes) - Commande 24h à l'avance", featured: true, image: placeholderImg },
-            { name: "Demi-Mouton", arabicName: "نصف خروف", price: fmt(150.00), description: "Demi-agneau grillé avec riz et sauces (5-8 personnes) - Commande 24h à l'avance", featured: true, image: placeholderImg },
-            { name: "Quart de Mouton", arabicName: "ربع خروف", price: fmt(90.99), description: "Quart d'agneau grillé avec accompagnements (3-4 personnes)", image: placeholderImg },
-            { name: "Quart de Mouton Spécial", arabicName: "ربع خروف خاص", price: fmt(100.00), description: "Quart d'agneau avec sélection premium (3-4 personnes)", image: placeholderImg },
+            createItem("Saltah", "Saltah", "سلته", 11.99, "Le plat national, ragoût bouillonnant, fenugrec", "The national dish, bubbling stew, fenugreek", placeholderImg, true),
+            createItem("Fahsa", "Fahsa", "فحسه", 12.99, "Ragoût de viande fondante, servi brûlant", "Melting meat stew, served boiling hot"),
+            createItem("Aqdah Poulet", "Chicken Aqdah", "عقدة دجاج", 12.99, "Poulet émincé sauté aux légumes", "Sliced chicken sautéed with vegetables"),
+            createItem("Aqdah Agneau", "Lamb Aqdah", "عقدة لحم", 14.99, "Agneau émincé sauté aux épices", "Sliced lamb sautéed with spices"),
+            createItem("Aqdah Poisson", "Fish Aqdah", "عقدة سمك", 13.99, "Morceaux de poisson épicés et légumes", "Spicy fish pieces and vegetables"),
+            createItem("Foul", "Foul", "فول", 7.99, "Fèves mijotées, tomates, oignons, épices", "Simmered fava beans, tomatoes, onions, spices"),
+            createItem("Fassoulia", "Fassoulia", "فاصوليا", 7.99, "Haricots blancs ou rouges, sauce tomate", "White or red beans, tomato sauce"),
+            createItem("Shakshouka", "Shakshouka", "شكشوكة", 7.99, "Oeufs brouillés aux tomates et oignons", "Scrambled eggs with tomatoes and onions"),
+            createItem("Foie d'Agneau", "Lamb Liver", "kibda", 10.99, "Foie sauté à la yéménite, très tendre", "Sautéed liver Yemeni style, very tender"),
         ]
     },
     {
         id: "desserts",
-        title: "Desserts Yéménites",
-        arabicTitle: "الحلويات اليمنية",
+        title: "Desserts",
+        titleEn: "Desserts",
+        titleAr: "الحلويات",
         items: [
-            { name: "Arika à la Banane", arabicName: "عريكة بالموز", price: fmt(5.99), description: "Pâte feuilletée croustillante avec banane et miel", image: placeholderImg },
-            { name: "Arika aux Dattes", arabicName: "عريكة بالتمر", price: fmt(5.99), description: "Pâte feuilletée avec dattes et miel naturel", image: placeholderImg },
-            { name: "Arika Royale", arabicName: "عريكة ملكية", price: fmt(5.99), description: "Arika garnie de fruits secs, miel et crème", featured: true, image: placeholderImg },
-            { name: "Fatta aux Dattes", arabicName: "فتة بالتمر", price: fmt(4.99), description: "Pain en couches avec dattes, miel et beurre clarifié", image: placeholderImg },
-            { name: "Fatta à la Banane", arabicName: "فتة بالموز", price: fmt(4.99), description: "Pain en couches avec banane, miel et crème", image: placeholderImg },
-            { name: "Fatta Royale", arabicName: "فتة ملكية", price: fmt(4.99), description: "Pain en couches avec banane, miel et crème", image: placeholderImg },
-            { name: "Soussi", arabicName: "سوسي", price: fmt(5.99), description: "Dessert traditionnel au pain, miel et épices", image: placeholderImg },
-            { name: "Kunafa", arabicName: "كنافة", price: fmt(5.99), description: "Pâtisserie au fromage doux et sirop sucré", featured: true, image: placeholderImg },
+            createItem("Masoub Royal", "Royal Masoub", "معصوب ملكي", 7.99, "Banane, Pain émietté, Crème, Miel, Nigelle", "Banana, Crumbled bread, Cream, Honey, Nigella", placeholderImg, true),
+            createItem("Arika", "Arika", "عريكة", 8.99, "Dattes, Pain, Crème, Miel, Fromage (option)", "Dates, Bread, Cream, Honey, Cheese (optional)"),
+            createItem("Fatut", "Fatut", "فتوت", 6.99, "Pain émietté, Banane ou dattes, Beurre", "Crumbled bread, Banana or dates, Butter"),
+            createItem("Kunafa", "Kunafa", "كنافة", 6.99, "Cheveux d'ange, Fromage fondant, Sirop", "Angel hair, Melting cheese, Syrup"),
+            createItem("Baklava", "Baklava", "بقلاوة", 5.99, "Feuilleté aux noix et miel (3 pièces)", "Puff pastry with walnuts and honey (3 pieces)"),
+            createItem("Muhallabia", "Muhallabia", "مهلبية", 4.50, "Pudding au lait, eau de rose, pistaches", "Milk pudding, rose water, pistachios"),
         ]
     },
     {
-        id: "drinks",
-        title: "Jus Frais & Boissons",
-        arabicTitle: "العصائر والمشروبات",
+        id: "boissons_chaudes",
+        title: "Boissons Chaudes",
+        titleEn: "Hot Drinks",
+        titleAr: "المشروبات الساخنة",
         items: [
-            { name: "Jus de Mangue au Lait", arabicName: "عصير مانجو بالحليب", price: fmt(4.99), description: "Jus de mangue frais avec lait", image: placeholderImg },
-            { name: "Jus d'Orange", arabicName: "عصير برتقال", price: fmt(4.99), description: "Jus d'orange frais pressé", image: placeholderImg },
-            { name: "Jus Citron-Menthe", arabicName: "عصير ليمون ونعناع", price: fmt(4.99), description: "Jus de citron rafraîchissant à la menthe", image: placeholderImg },
-            { name: "Jus de Banane", arabicName: "عصير موز", price: fmt(4.99), description: "Jus de banane crémeux", image: placeholderImg },
-            { name: "Jus d'Avocat au Lait", arabicName: "عصير أفوكادو بالحليب", price: fmt(4.99), description: "Jus d'avocat onctueux avec lait", image: placeholderImg },
-            { name: "Laban Ayran", arabicName: "لبن عيران", price: fmt(3.99), description: "Boisson au yaourt salée", image: placeholderImg },
-            { name: "Jus de Fraise au Lait", arabicName: "عصير فراولة بالحليب", price: fmt(4.99), description: "Jus de fraise frais avec lait", featured: true, image: placeholderImg },
-            { name: "Jus Mix Socotra", arabicName: "عصير ميكس سقطرى", price: fmt(5.99), description: "Mélange spécial de fruits frais", featured: true, image: placeholderImg },
-            { name: "Canette de Jus", arabicName: "عصير معلب", price: fmt(2.99), description: "Jus en canette", image: placeholderImg },
-            { name: "Eau Minérale", arabicName: "ماء معدني", price: fmt(1.99), description: "Eau minérale", image: placeholderImg },
-            { name: "Thé Socotra", arabicName: "شاي سقطرى", price: fmt(1.99), description: "Thé noir yéménite avec cardamome", image: placeholderImg },
-            { name: "Thé Aden", arabicName: "شاي عدن", price: fmt(2.50), description: "Thé au lait d'Aden préparé à la manière traditionnelle", image: placeholderImg },
-            { name: "Café Espresso", arabicName: "قهوة إسبرسو", price: fmt(1.99), description: "Café espresso fort", image: placeholderImg },
-            { name: "Café Double", arabicName: "قهوة مزدوجة", price: fmt(1.99), description: "Double espresso", image: placeholderImg },
+            createItem("Thé Adeni", "Adeni Tea", "شاي عدني", 2.50, "Thé au lait, cardamome, clous de girofle", "Milk tea, cardamom, cloves", placeholderImg, true),
+            createItem("Thé Rouge", "Red Tea", "شاي أحمر", 2.00, "Thé noir classique ou à la menthe", "Classic black tea or with mint"),
+            createItem("Café Qishr", "Qishr Coffee", "قهوة قشر", 2.50, "Infuion d'écorces de café, gingembre", "Coffee husk infusion, ginger"),
+            createItem("Thé Sanaa", "Sanaa Tea", "شاي صنعاني", 2.50, "Thé spécial aux épices douces", "Special tea with mild spices"),
+        ]
+    },
+    {
+        id: "boissons_fraiches",
+        title: "Boissons Fraîches",
+        titleEn: "Cold Drinks",
+        titleAr: "المشروبات الباردة",
+        items: [
+            createItem("Jus de Citron Menthe", "Lemon Mint Juice", "ليمون بالنعناع", 4.50, "Frais et rafraîchissant", "Fresh and refreshing"),
+            createItem("Vimto", "Vimto", "فيمتو", 3.00, "Boisson aux fruits rouges gazeuse", "Sparkling berry drink"),
+            createItem("Coca Cola", "Coca Cola", "كوكاكولا", 2.50, "", ""),
+            createItem("Fanta", "Fanta", "فانتا", 2.50, "", ""),
+            createItem("Sprite", "Sprite", "سبريت", 2.50, "", ""),
+            createItem("Eau Minérale", "Mineral Water", "ماء", 1.50, "50cl", "50cl"),
         ]
     }
 ];

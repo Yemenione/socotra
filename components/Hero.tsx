@@ -2,9 +2,15 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useLanguage } from "@/lib/language-context";
+import { translations } from "@/lib/translations";
+import { cn } from "@/lib/utils";
 
 const Hero = () => {
     const ref = useRef(null);
+    const { language, dir } = useLanguage();
+    const t = translations[language].hero;
+
     const { scrollYProgress } = useScroll({
         target: ref,
         offset: ["start start", "end start"],
@@ -14,7 +20,7 @@ const Hero = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
     return (
-        <section ref={ref} className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+        <section ref={ref} className="relative h-screen w-full overflow-hidden flex items-center justify-center" dir={dir}>
 
             {/* Parallax Background */}
             <motion.div
@@ -39,16 +45,22 @@ const Hero = () => {
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
 
                 {/* Text Content */}
-                <div className="md:col-span-7 text-center md:text-left pt-20 relative z-20">
+                <div className={cn(
+                    "md:col-span-7 pt-20 relative z-20",
+                    language === 'ar' ? "text-right md:text-right" : "text-center md:text-left"
+                )}>
                     <motion.div
-                        initial={{ opacity: 0, x: -50 }}
+                        initial={{ opacity: 0, x: dir === 'rtl' ? 50 : -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1, ease: "easeOut" }}
-                        className="mb-6 flex items-center gap-4 justify-center md:justify-start"
+                        className={cn(
+                            "mb-6 flex items-center gap-4",
+                            language === 'ar' ? "justify-center md:justify-start flex-row-reverse" : "justify-center md:justify-start"
+                        )}
                     >
                         <div className="h-[2px] w-16 bg-gradient-to-r from-gold-400 to-transparent" />
                         <span className="text-sand-100 uppercase tracking-[0.4em] text-xs font-bold shadow-black drop-shadow-lg">
-                            Paris • Since 1924
+                            {t.est}
                         </span>
                     </motion.div>
 
@@ -58,9 +70,9 @@ const Hero = () => {
                         transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
                         className="font-heading text-6xl md:text-8xl lg:text-9xl font-black text-sand-50 leading-[0.9] mb-8 drop-shadow-2xl"
                     >
-                        A LEGACY <br />
+                        {t.titlePart1} <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-100 drop-shadow-sm">
-                            OF TASTE
+                            {t.titlePart2}
                         </span>
                     </motion.h1>
 
@@ -68,27 +80,36 @@ const Hero = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 1, delay: 0.6 }}
-                        className="text-sand-100/90 text-lg md:text-xl font-light max-w-xl leading-relaxed mb-12 mx-auto md:mx-0 drop-shadow-lg backdrop-blur-[2px]"
+                        className={cn(
+                            "text-sand-100/90 text-lg md:text-xl font-light max-w-xl leading-relaxed mb-12 drop-shadow-lg backdrop-blur-[2px]",
+                            language === 'ar' ? "mr-0 ml-auto md:ml-0 md:mr-0 font-serif" : "mx-auto md:mx-0"
+                        )}
                     >
-                        Embark on a culinary odyssey where the ancient spices of Arabia meet modern Parisian elegance. A dining experience curated for the senses.
+                        {t.subtitle}
                     </motion.p>
 
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.8 }}
-                        className="flex flex-col md:flex-row gap-6 items-center"
+                        className={cn(
+                            "flex flex-col md:flex-row gap-6 items-center",
+                            language === 'ar' ? "md:flex-row-reverse justify-end" : ""
+                        )}
                     >
                         <button className="relative overflow-hidden group bg-gradient-to-r from-gold-500 to-gold-600 text-rich-black font-bold text-xs tracking-[0.2em] py-5 px-10 rounded-sm shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all duration-500">
-                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">EXPLORE COLLECTION</span>
+                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">{t.explore}</span>
                             <div className="absolute inset-0 bg-rich-black transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out" />
                         </button>
 
-                        <button className="flex items-center gap-4 text-sand-50 text-xs tracking-[0.2em] font-bold group hover:text-gold-300 transition-all">
+                        <button className={cn(
+                            "flex items-center gap-4 text-sand-50 text-xs tracking-[0.2em] font-bold group hover:text-gold-300 transition-all",
+                            language === 'ar' && "flex-row-reverse"
+                        )}>
                             <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold-300 group-hover:scale-110 transition-all duration-300 backdrop-blur-sm bg-white/5">
-                                <span className="text-xl pl-1">▶</span>
+                                <span className={cn("text-xl", language === 'ar' ? "pr-1" : "pl-1")}>▶</span>
                             </div>
-                            <span>OUR STORY</span>
+                            <span>{t.watch}</span>
                         </button>
                     </motion.div>
                 </div>
