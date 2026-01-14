@@ -17,11 +17,9 @@ const Hero = () => {
         const fetchSettings = async () => {
             try {
                 const res = await fetch('/api/settings', { next: { revalidate: 60 } });
+                if (!res.ok) return;
                 const data = await res.json();
                 if (data?.heroVideoUrl) {
-                    // Simple check: if it looks like a file path, use it directly? 
-                    // For now, let's just use what's provided. If it's a Youtube URL, the user needs to provide the embed version or we'd need complex parsing.
-                    // To keep it safe, I'll stick to the current iframe if no change, or switch to video tag if it ends in .mp4
                     setVideoUrl(data.heroVideoUrl);
                 }
             } catch (error) {

@@ -20,7 +20,18 @@ const Navbar = () => {
     const [settings, setSettings] = useState<any>(null);
 
     useEffect(() => {
-        fetch('/api/settings').then(res => res.json()).then(data => setSettings(data));
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    setSettings(data);
+                }
+            } catch (error) {
+                console.error("Failed to load settings:", error);
+            }
+        };
+        fetchSettings();
     }, []);
 
     useEffect(() => {

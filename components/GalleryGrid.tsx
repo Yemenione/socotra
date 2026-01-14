@@ -51,6 +51,7 @@ const GalleryGrid = () => {
         const fetchImages = async () => {
             try {
                 const res = await fetch('/api/gallery', { next: { revalidate: 0 } });
+                if (!res.ok) return;
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
                     setImages(data);
