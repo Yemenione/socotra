@@ -110,10 +110,16 @@ async function main() {
 
   // 3. Seed Menu
   for (const cat of menuData) {
-    const category = await prisma.menuCategory.create({
-      data: {
-        id: cat.id, // Using existing IDs to match frontend state default
-        slug: cat.id, // Using ID as slug
+    const category = await prisma.menuCategory.upsert({
+      where: { id: cat.id },
+      update: {
+        title: cat.title,
+        titleEn: cat.titleEn,
+        titleAr: cat.titleAr
+      },
+      create: {
+        id: cat.id,
+        slug: cat.id,
         title: cat.title,
         titleEn: cat.titleEn,
         titleAr: cat.titleAr
@@ -121,19 +127,32 @@ async function main() {
     });
 
     for (const item of cat.items) {
-      await prisma.menuItem.create({
-        data: {
+      // We assume items don't have static IDs in this simple seed, but let's try to find them by name to avoid duplicates if re-seeding
+      // Since we don't have a unique constraint on item name + category, we might just delete existing or checking first.
+      // For simplicity in this fix, let's just create if not exists or similar.
+      // Actually, standard seed practice for simple lists:
+      const existingItem = await prisma.menuItem.findFirst({
+        where: {
           name: item.name,
-          nameEn: item.nameEn,
-          nameAr: item.nameAr,
-          description: item.description,
-          descriptionEn: item.descriptionEn,
-          price: item.price,
-          image: item.image,
-          featured: item.featured || false,
           categoryId: category.id
         }
       });
+
+      if (!existingItem) {
+        await prisma.menuItem.create({
+          data: {
+            name: item.name,
+            nameEn: item.nameEn,
+            nameAr: item.nameAr,
+            description: item.description,
+            descriptionEn: item.descriptionEn,
+            price: item.price,
+            image: item.image,
+            featured: item.featured || false,
+            categoryId: category.id
+          }
+        });
+      }
     }
   }
   console.log('Menu seeded');
