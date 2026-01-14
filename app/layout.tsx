@@ -19,6 +19,7 @@ const tajawal = Tajawal({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://socotra.paris'),
   title: "Socotra | The Essence of Yemeni Luxury in Paris",
   description: "Experience the refined art of Yemeni cuisine at Socotra. From slow-cooked Mandi to aromatic Saltah, indulge in a culinary journey through ancient traditions in a modern luxury setting.",
   keywords: ["Yemeni Restaurant Paris", "Luxury Dining Paris", "Halal Fine Dining", "Mandi Paris", "Middle Eastern Cuisine", "Socotra Restaurant"],

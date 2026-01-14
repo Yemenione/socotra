@@ -17,143 +17,108 @@ const Hero = () => {
     });
 
     const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+    const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
     return (
         <section ref={ref} className="relative h-screen w-full overflow-hidden flex items-center justify-center" dir={dir}>
 
-            {/* Parallax Background */}
+            {/* Cinematic Video Background */}
             <motion.div
                 style={{ y, opacity }}
-                className="absolute inset-0 z-0 bg-rich-black"
+                className="absolute inset-0 z-0 bg-rich-black overflow-hidden"
             >
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover scale-110 opacity-70 mix-blend-overlay"
-                >
-                    {/* Premium Slow Motion Steaming Food/Chefs or Scenic Yemen - using a placeholder for now */}
-                    <source src="https://cdn.coverr.co/videos/coverr-slow-motion-of-steaming-food-5259/1080p.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute inset-0 bg-gradient-to-b from-rich-black/60 via-rich-black/30 to-sand-50/90" />
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
+                <div className="absolute inset-0 pointer-events-none">
+                    <iframe
+                        src="https://www.youtube.com/embed/VN5EoMGb-xw?autoplay=1&mute=1&controls=0&loop=1&playlist=VN5EoMGb-xw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1"
+                        className="absolute top-1/2 left-1/2 w-[300%] h-[150%] -translate-x-1/2 -translate-y-1/2 object-cover opacity-80"
+                        allow="autoplay; encrypted-media"
+                        allowFullScreen
+                    />
+                </div>
+
+                {/* Refined Luxury Gradient Overlay - Adjusted for YouTube brightness */}
+                <div className="absolute inset-0 bg-gradient-to-b from-rich-black/70 via-rich-black/40 to-rich-black/90" />
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-overlay" />
             </motion.div>
 
-            {/* Content Container */}
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+            {/* Central Content */}
+            <div className="relative z-20 w-full max-w-5xl px-6 text-center flex flex-col items-center justify-end h-full pb-24 md:pb-32">
 
-                {/* Text Content */}
-                <div className={cn(
-                    "md:col-span-7 pt-20 relative z-20",
-                    language === 'ar' ? "text-right md:text-right" : "text-center md:text-left"
-                )}>
-                    <motion.div
-                        initial={{ opacity: 0, x: dir === 'rtl' ? 50 : -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        className={cn(
-                            "mb-6 flex items-center gap-4",
-                            language === 'ar' ? "justify-center md:justify-start flex-row-reverse" : "justify-center md:justify-start"
-                        )}
+
+                <motion.h1
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+                    className={cn(
+                        "font-heading text-6xl md:text-8xl font-black text-sand-50 leading-none mb-3 drop-shadow-2xl tracking-wide",
+                        language === 'ar' && "font-serif"
+                    )}
+                >
+                    {t.titlePart1}
+                </motion.h1>
+
+                <motion.h2
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                    className="text-xl md:text-3xl font-heading italic text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-100 mb-6 drop-shadow-lg"
+                >
+                    {t.titlePart2}
+                </motion.h2>
+
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.8 }}
+                    className={cn(
+                        "text-sand-100/80 text-sm md:text-lg font-light max-w-xl mx-auto leading-relaxed mb-10 drop-shadow-md hidden md:block",
+                        language === 'ar' && "font-serif leading-loose"
+                    )}
+                >
+                    {t.subtitle}
+                </motion.p>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    className="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8"
+                >
+                    <a
+                        href="#menu"
+                        className="w-64 flex items-center justify-center glass-panel px-8 py-3 rounded-sm text-sand-50 font-bold text-xs tracking-[0.2em] uppercase transition-all duration-500 hover:bg-gold-500 hover:text-rich-black hover:border-gold-500 hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)] border border-white/10 bg-white/5 backdrop-blur-sm"
                     >
-                        <div className="h-[2px] w-16 bg-gradient-to-r from-gold-400 to-transparent" />
-                        <span className="text-sand-100 uppercase tracking-[0.4em] text-xs font-bold shadow-black drop-shadow-lg">
-                            {t.est}
-                        </span>
-                    </motion.div>
+                        {t.explore}
+                    </a>
 
-                    <motion.h1
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                        className="font-heading text-6xl md:text-8xl lg:text-9xl font-black text-sand-50 leading-[0.9] mb-8 drop-shadow-2xl"
+                    {/* Vertical Line Separator for Mobile */}
+                    <div className="h-12 w-[1px] bg-gradient-to-b from-transparent via-gold-400/50 to-transparent md:hidden" />
+
+                    <button
+                        onClick={() => document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="w-64 flex items-center justify-center group px-8 py-3 rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:scale-105"
                     >
-                        {t.titlePart1} <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-100 drop-shadow-sm">
-                            {t.titlePart2}
-                        </span>
-                    </motion.h1>
-
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 0.6 }}
-                        className={cn(
-                            "text-sand-100/90 text-lg md:text-xl font-light max-w-xl leading-relaxed mb-12 drop-shadow-lg backdrop-blur-[2px]",
-                            language === 'ar' ? "mr-0 ml-auto md:ml-0 md:mr-0 font-serif" : "mx-auto md:mx-0"
-                        )}
-                    >
-                        {t.subtitle}
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.8 }}
-                        className={cn(
-                            "flex flex-col md:flex-row gap-6 items-center",
-                            language === 'ar' ? "md:flex-row-reverse justify-end" : ""
-                        )}
-                    >
-                        <button className="relative overflow-hidden group bg-gradient-to-r from-gold-500 to-gold-600 text-rich-black font-bold text-xs tracking-[0.2em] py-5 px-10 rounded-sm shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all duration-500">
-                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">{t.explore}</span>
-                            <div className="absolute inset-0 bg-rich-black transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out" />
-                        </button>
-
-                        <button className={cn(
-                            "flex items-center gap-4 text-sand-50 text-xs tracking-[0.2em] font-bold group hover:text-gold-300 transition-all",
-                            language === 'ar' && "flex-row-reverse"
+                        <span className={cn(
+                            "text-sand-50 text-xs tracking-[0.2em] font-bold uppercase group-hover:text-gold-300 transition-colors",
+                            language === 'ar' && "tracking-normal font-serif"
                         )}>
-                            <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold-300 group-hover:scale-110 transition-all duration-300 backdrop-blur-sm bg-white/5">
-                                <span className={cn("text-xl", language === 'ar' ? "pr-1" : "pl-1")}>▶</span>
-                            </div>
-                            <span>{t.watch}</span>
-                        </button>
-                    </motion.div>
-                </div>
-
-                {/* Highlight/Video Frame */}
-                <div className="hidden md:block md:col-span-5 relative h-[600px] flex items-center justify-center">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
-                        className="relative w-full h-[500px] rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl backdrop-blur-md"
-                    >
-                        {/* Frame Border Effect */}
-                        <div className="absolute inset-0 border border-gold-500/30 rounded-[2rem] z-20 pointer-events-none" />
-
-                        {/* Content Placeholder for Future Video */}
-                        <div className="absolute inset-0 bg-rich-black/60 z-10 flex flex-col items-center justify-center text-center p-8">
-                            <div className="w-20 h-20 rounded-full border-2 border-gold-500/50 flex items-center justify-center mb-6 text-gold-400">
-                                <span className="text-3xl">✨</span>
-                            </div>
-                            <h3 className="text-2xl font-heading font-bold text-sand-50 mb-2">The Socotra Experience</h3>
-                            <p className="text-sand-200 text-sm font-light tracking-wide uppercase">Coming Soon</p>
-                        </div>
-
-                        {/* Background Accent for the Frame (Subtle) */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-gold-900/20 to-rich-black z-0" />
-
-                        {/* Optional: Glossy Shine */}
-                        <div className="absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-10 left-full animate-shine" />
-                    </motion.div>
-
-                    {/* Decorative Elements behind frame */}
-                    <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gold-500/5 blur-[100px] rounded-full" />
-                </div>
+                            {t.reserve}
+                        </span>
+                    </button>
+                </motion.div>
             </div>
 
             {/* Scroll Indicator */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                transition={{ delay: 2, duration: 1.5 }}
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
             >
-                <div className="w-[1px] h-16 bg-gradient-to-b from-gold-400 to-transparent"></div>
+                <div className="w-[1px] h-24 bg-gradient-to-b from-gold-400 via-gold-400/50 to-transparent relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1/2 bg-white/80 animate-shimmer filter blur-[1px]"></div>
+                </div>
             </motion.div>
         </section>
     );

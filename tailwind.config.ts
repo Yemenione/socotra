@@ -10,28 +10,28 @@ const config: Config = {
         extend: {
             colors: {
                 sand: {
-                    50: '#FDFBF7',
-                    100: '#F7F1E3',
-                    200: '#EADBC8',
-                    300: '#DEC4A6',
-                    DEFAULT: '#D4B48F',
-                    500: '#C69C6D',
-                    600: '#A67C52',
-                    900: '#5D4037',
+                    50: '#FAF9F6', // Off-white/Alabaster
+                    100: '#F5F2EA',
+                    200: '#EBE5D5',
+                    300: '#DFD3BB',
+                    DEFAULT: '#D4C1A0', // Muted Beige
+                    500: '#BFA885',
+                    600: '#9E8866',
+                    900: '#5C4D3C',
                 },
                 gold: {
-                    100: '#F9F1D8',
-                    200: '#F0DEAA',
-                    300: '#E6CB7D',
-                    DEFAULT: '#D4AF37', // Classic metallic gold
-                    500: '#C5A028',
-                    600: '#A3841F',
-                    700: '#826919',
-                    800: '#634F13',
-                    900: '#46380E',
+                    100: '#FFF9E5',
+                    200: '#FAE8BA',
+                    300: '#F0D68C',
+                    DEFAULT: '#E5C472', // Champagne/Light Gold - less orange
+                    500: '#CFA84F',
+                    600: '#B08B34',
+                    700: '#8F6F26',
+                    800: '#70561E',
+                    900: '#523E15',
                 },
-                "rich-black": "#0C0C0C",
-                "deep-green": "#1A3C34", // Emerald luxury
+                "rich-black": "#0F0F0F", // Softer, premium matte black
+                "deep-green": "#122A24", // Darker luxury green
             },
             fontFamily: {
                 heading: ["var(--font-playfair)", "serif"],

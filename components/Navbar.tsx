@@ -46,56 +46,55 @@ const Navbar = () => {
                 animate={{ y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className={cn(
-                    "fixed top-0 inset-x-0 z-50 transition-all duration-500",
+                    "fixed top-0 inset-x-0 z-50 transition-all duration-700 ease-in-out",
                     scrolled
-                        ? "bg-rich-black/95 backdrop-blur-md border-b border-white/10 py-3 shadow-lg"
-                        : "bg-transparent py-6"
+                        ? "bg-rich-black/60 backdrop-blur-xl border-b border-white/5 py-4 shadow-2xl"
+                        : "bg-transparent py-6 md:py-8"
                 )}
                 dir={dir}
             >
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div className="max-w-[1400px] mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
                     {/* Logo Area */}
-                    <Link href="/" className="flex-shrink-0 relative h-12 w-32 md:h-16 md:w-40 block">
-                        {/* Using the logo from public folder as discovered */}
+                    <Link href="/" className="flex-shrink-0 relative h-12 w-32 md:h-20 md:w-48 block transition-transform duration-500 hover:scale-105">
                         <Image
                             src="/logo.png"
                             alt="Socotra Logo"
                             fill
-                            className="object-contain"
+                            className="object-contain drop-shadow-lg"
                             priority
                         />
                     </Link>
 
                     {/* Desktop Nav */}
-                    <nav className="hidden md:flex items-center gap-10">
+                    <nav className="hidden md:flex items-center gap-10 lg:gap-14">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
                                 className={cn(
-                                    "text-sand-100 text-sm font-medium tracking-[0.15em] uppercase hover:text-gold-400 transition-colors relative group",
-                                    language === 'ar' && "font-serif text-lg tracking-normal" // Adjust for Arabic typography
+                                    "text-sand-100/90 text-[11px] lg:text-xs font-bold tracking-[0.25em] uppercase hover:text-gold-400 transition-all duration-300 relative group py-2",
+                                    language === 'ar' && "font-serif text-lg tracking-normal font-medium"
                                 )}
                             >
                                 {link.name}
-                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold-400 transition-all duration-300 group-hover:w-full" />
+                                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-gold-400 transition-all duration-500 group-hover:w-full" />
                             </Link>
                         ))}
                     </nav>
 
                     {/* Right Actions */}
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-6 lg:gap-8">
                         <button
                             onClick={toggleLanguage}
-                            className="hidden md:flex items-center gap-2 text-sand-50/70 hover:text-gold-400 transition-colors"
+                            className="hidden md:flex items-center gap-2 text-sand-50/70 hover:text-gold-400 transition-colors group"
                         >
-                            <Globe size={18} />
-                            <span className="text-xs uppercase tracking-widest font-bold">{language.toUpperCase()}</span>
+                            <Globe size={16} className="group-hover:rotate-12 transition-transform duration-500" />
+                            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">{language}</span>
                         </button>
 
                         <button
-                            onClick={() => document.getElementById('reserve')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="hidden md:block bg-gold-600 text-rich-black px-6 py-2 rounded-sm text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-colors"
+                            onClick={() => document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="hidden md:block bg-gradient-to-r from-gold-500 to-gold-600 text-rich-black px-6 lg:px-8 py-2.5 rounded-sm text-[10px] lg:text-xs font-bold uppercase tracking-[0.25em] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-105 transition-all duration-300"
                         >
                             {t.reserve}
                         </button>
@@ -103,7 +102,7 @@ const Navbar = () => {
                         {/* Mobile Toggle */}
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="md:hidden text-sand-50 hover:text-gold-400"
+                            className="md:hidden text-sand-50 hover:text-gold-400 transition-colors"
                         >
                             {isOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>
