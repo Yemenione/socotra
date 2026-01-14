@@ -56,7 +56,7 @@ const Hero = () => {
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                        className="font-heading text-7xl md:text-9xl font-black text-sand-50 leading-[0.85] mb-8 drop-shadow-2xl"
+                        className="font-heading text-5xl md:text-9xl font-black text-sand-50 leading-[0.9] md:leading-[0.85] mb-8 drop-shadow-2xl"
                     >
                         ROYAL <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.1)" }}>

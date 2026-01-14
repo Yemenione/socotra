@@ -96,40 +96,88 @@ const Navbar = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, x: "100%" }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: "100%" }}
-                        transition={{ duration: 0.5, ease: "circOut" }}
-                        className="fixed inset-0 bg-rich-black z-[60] flex flex-col items-center justify-center border-l border-white/10"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[60] flex"
                     >
-                        <button
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-rich-black/80 backdrop-blur-sm"
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-6 right-6 text-sand-50 hover:text-gold-400"
-                        >
-                            <X size={32} />
-                        </button>
+                        />
 
-                        <div className="flex flex-col gap-8 text-center">
-                            {navLinks.map((link, i) => (
-                                <motion.a
-                                    key={link.name}
-                                    href={link.href}
-                                    onClick={() => setIsOpen(false)}
+                        {/* Menu Drawer */}
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: "0%" }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                            className="relative w-full max-w-md ml-auto h-full bg-rich-black border-l border-white/10 flex flex-col shadow-2xl overflow-y-auto"
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="absolute top-6 right-6 p-2 text-sand-50 hover:text-gold-400 transition-colors z-50 rounded-full border border-white/10"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            <div className="flex flex-col h-full p-8 pt-24">
+                                {/* Navigation */}
+                                <nav className="flex flex-col gap-6 mb-12">
+                                    {navLinks.map((link, i) => (
+                                        <motion.a
+                                            key={link.name}
+                                            href={link.href}
+                                            onClick={() => setIsOpen(false)}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.1 + (i * 0.05) }}
+                                            className="group flex items-center justify-between py-4 border-b border-white/5"
+                                        >
+                                            <span className="text-3xl font-heading font-bold text-sand-50 group-hover:text-gold-400 transition-colors">
+                                                {link.name}
+                                            </span>
+                                            <span className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-gold-400">
+                                                →
+                                            </span>
+                                        </motion.a>
+                                    ))}
+                                </nav>
+
+                                {/* Action Button */}
+                                <motion.button
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 * i }}
-                                    className="text-4xl font-heading font-black text-sand-50 hover:text-gold-400 transition-colors"
+                                    transition={{ delay: 0.4 }}
+                                    className="w-full bg-gradient-to-r from-gold-500 to-gold-600 text-rich-black py-4 rounded-sm font-bold uppercase tracking-[0.2em] mb-12 shadow-lg hover:shadow-gold-500/20 transition-all"
                                 >
-                                    {link.name}
-                                </motion.a>
-                            ))}
-                        </div>
+                                    Book a Table
+                                </motion.button>
 
-                        <div className="mt-12 text-center">
-                            <button className="bg-gold-600 text-rich-black px-8 py-3 rounded-full text-sm font-bold uppercase tracking-[0.2em]">
-                                Book a Table
-                            </button>
-                        </div>
+                                {/* Footer Info */}
+                                <div className="mt-auto space-y-6 pt-8 border-t border-white/10">
+                                    <div className="text-sand-50/60 text-sm space-y-2">
+                                        <p className="flex items-center gap-3">
+                                            <span className="w-8 h-[1px] bg-gold-500/50"></span>
+                                            Paris, France
+                                        </p>
+                                        <p>123 Avenue des Champs-Élysées</p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        {['Instagram', 'Twitter', 'Facebook'].map((social) => (
+                                            <a key={social} href="#" className="text-xs font-bold text-gold-500 uppercase tracking-wider hover:text-white transition-colors">
+                                                {social}
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
