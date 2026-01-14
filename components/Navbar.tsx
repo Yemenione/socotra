@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useLanguage } from "@/lib/language-context"; // Import Hook
 import { translations } from "@/lib/translations"; // Import Translations
+import { usePathname } from "next/navigation";
 
 type Language = "fr" | "en" | "ar";
 
@@ -25,12 +26,15 @@ const Navbar = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const pathname = usePathname();
+    const isHomePage = pathname === "/";
+
     const navLinks = [
-        { name: t.home, href: "#" },
-        { name: t.menu, href: "#menu" },
-        { name: t.story, href: "#about" },
-        { name: t.gallery, href: "#gallery" },
-        { name: t.contact, href: "#footer" },
+        { name: t.home, href: isHomePage ? "#" : "/" },
+        { name: t.menu, href: isHomePage ? "#menu" : "/#menu" },
+        { name: t.story, href: isHomePage ? "#about" : "/#about" },
+        { name: t.gallery, href: "/gallery" },
+        { name: t.contact, href: isHomePage ? "#footer" : "/#footer" },
     ];
 
     const toggleLanguage = () => {
