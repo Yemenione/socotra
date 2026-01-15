@@ -20,16 +20,14 @@ export default function AdminDashboard() {
     useEffect(() => {
         const fetchRealStats = async () => {
             try {
-                const [itemsRes, galleryRes] = await Promise.all([
+                const [itemsRes, galleryRes, reservationsRes] = await Promise.all([
                     fetch('/api/items'),
-                    fetch('/api/gallery')
+                    fetch('/api/gallery'),
+                    fetch('/api/reservations')
                 ]);
                 const itemsCount = (await itemsRes.json())?.length || 0;
                 const galleryCount = (await galleryRes.json())?.length || 0;
-
-                // For reservations, we'll just mock for now as we might not have the API ready or populated
-                // If you have a reservations API, add it here.
-                const reservationsCount = 12;
+                const reservationsCount = (await reservationsRes.json())?.length || 0;
 
                 setStats([
                     { label: 'Menu Items', value: itemsCount.toString(), sub: 'Active dishes', icon: UtensilsCrossed, color: 'text-gold-500' },

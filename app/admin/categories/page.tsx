@@ -31,16 +31,23 @@ export default function CategoriesManagement() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // Mock API call simulation
-            console.log("Saving category", formData);
-            // In real app: await fetch('/api/categories', { method: 'POST', body: JSON.stringify(formData) });
+            const method = editingId && editingId !== 'new' ? 'PUT' : 'POST';
+            const body = editingId && editingId !== 'new'
+                ? { ...formData, id: editingId }
+                : formData;
 
-            // Optimistic update for demo
-            if (editingId === 'new') {
-                setCategories([...categories, { ...formData, id: Date.now().toString(), items: [] }]);
+            const res = await fetch('/api/categories', {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+
+            if (res.ok) {
+                fetchCategories();
+                resetForm();
+            } else {
+                console.error("Failed to save category");
             }
-
-            resetForm();
         } catch (error) {
             console.error(error);
         }
@@ -55,6 +62,18 @@ export default function CategoriesManagement() {
             order: cat.order || 0
         });
         setEditingId(cat.id);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this category?')) return;
+        try {
+            const res = await fetch(`/api/categories?id=${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                fetchCategories();
+            }
+        } catch (error) {
+            console.error("Delete failed", error);
+        }
     };
 
     const resetForm = () => {
@@ -150,7 +169,8 @@ export default function CategoriesManagement() {
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button onClick={() => handleEdit(cat)} className="p-2 text-sand-400 hover:text-gold-500 hover:bg-gold-50 rounded transition-colors"><Pencil size={16} /></button>
-                                        <button className="p-2 text-sand-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><Trash2 size={16} /></button>
+                                        <button onClick={() => handleDelete(cat.id)} className="p-2 text-sand-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><Trash2 size={16} /></button>
+
                                     </div>
                                 </td>
                             </tr>
