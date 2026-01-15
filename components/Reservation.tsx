@@ -149,6 +149,35 @@ const Reservation = () => {
                                     />
                                 </div>
 
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="group">
+                                        <label className={cn("block text-[10px] uppercase tracking-widest text-gold-500/80 mb-2 ml-1", language === 'ar' ? "text-right mr-1 ml-0 font-serif" : "")}>{language === 'ar' ? "البريد الإلكتروني" : "EMAIL"}</label>
+                                        <input
+                                            type="email"
+                                            required
+                                            className={cn(
+                                                "w-full bg-rich-black/40 border border-white/10 rounded-xl p-4 text-sand-50 placeholder-white/10 focus:outline-none focus:border-gold-500/50 focus:bg-rich-black/60 transition-all font-medium",
+                                                language === 'ar' ? "text-right" : ""
+                                            )}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            value={formData.email}
+                                        />
+                                    </div>
+                                    <div className="group">
+                                        <label className={cn("block text-[10px] uppercase tracking-widest text-gold-500/80 mb-2 ml-1", language === 'ar' ? "text-right mr-1 ml-0 font-serif" : "")}>{language === 'ar' ? "رقم الهاتف" : "PHONE"}</label>
+                                        <input
+                                            type="tel"
+                                            required
+                                            className={cn(
+                                                "w-full bg-rich-black/40 border border-white/10 rounded-xl p-4 text-sand-50 placeholder-white/10 focus:outline-none focus:border-gold-500/50 focus:bg-rich-black/60 transition-all font-medium",
+                                                language === 'ar' ? "text-right" : ""
+                                            )}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            value={formData.phone}
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-6">
                                     <div>
                                         <label className={cn("block text-[10px] uppercase tracking-widest text-gold-500/80 mb-2 ml-1", language === 'ar' ? "text-right mr-1 ml-0 font-serif" : "")}>{t.labels.date}</label>
