@@ -3,25 +3,21 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
     try {
-        // There should be only one config, so findFirst is appropriate
         let config = await prisma.siteConfig.findFirst();
 
-        // If no config exists, create a default one
+        // Create default config if none exists
         if (!config) {
             config = await prisma.siteConfig.create({
                 data: {
-
+                    contactEmail: 'contact@socotra.com',
+                    seoTitle: 'Socotra | Luxury Yemeni Cuisine',
                 }
             });
         }
 
-        // Runtime fix: If the config has the old broken default, clear it so the frontend uses the fallback
-        if (config.heroVideoUrl === "/videos/hero-bg.mp4") {
-            config.heroVideoUrl = null;
-        }
-
         return NextResponse.json(config);
     } catch (error) {
+        console.error("Settings GET error:", error);
         return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
     }
 }
@@ -30,23 +26,18 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
 
-        // Check if there is an existing config to update
-        const existingConfig = await prisma.siteConfig.findFirst();
+        // Upsert logic (update if exists, create if not - though GET ensures existence)
+        const firstConfig = await prisma.siteConfig.findFirst();
 
-        let config;
-        if (existingConfig) {
-            config = await prisma.siteConfig.update({
-                where: { id: existingConfig.id },
-                data: body,
-            });
-        } else {
-            config = await prisma.siteConfig.create({
-                data: body,
-            });
-        }
+        const config = await prisma.siteConfig.upsert({
+            where: { id: firstConfig?.id || 'default-id-placeholder' },
+            update: body,
+            create: body,
+        });
 
         return NextResponse.json(config);
     } catch (error) {
+        console.error("Settings POST error:", error);
         return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
     }
 }

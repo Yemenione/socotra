@@ -62,7 +62,10 @@ const Reservation = () => {
         <section id="reservation" className="py-24 relative flex items-center justify-center overflow-hidden bg-rich-black" dir={dir}>
             {/* Background & Atmosphere */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-30"
+                    style={{ backgroundImage: `url('${settings?.reservationImage || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop"}')` }}
+                ></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-rich-black via-rich-black/80 to-transparent"></div>
             </div>
 
@@ -88,8 +91,7 @@ const Reservation = () => {
                                 language === 'ar' && "font-serif"
                             )}
                         >
-                            {t.titlePart1} <br />
-                            <span className="text-gold-400 italic font-serif">{t.titlePart2}</span>
+                            {language === 'ar' ? (settings?.reservationTitleAr || t.titlePart1) : (settings?.reservationTitle || t.titlePart1 + " " + t.titlePart2)}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -100,7 +102,7 @@ const Reservation = () => {
                                 language === 'ar' && "font-serif"
                             )}
                         >
-                            {t.subtitle}
+                            {language === 'ar' ? (settings?.reservationSubtitleAr || t.subtitle) : (settings?.reservationSubtitle || t.subtitle)}
                         </motion.p>
 
                         <motion.div
@@ -121,7 +123,7 @@ const Reservation = () => {
                                 language === 'ar' ? "lg:justify-end flex-row-reverse" : "lg:justify-start"
                             )}>
                                 <span className="w-12 h-12 rounded-full border border-gold-500/30 flex items-center justify-center text-xl group-hover:bg-gold-500 group-hover:text-rich-black transition-all duration-300">📍</span>
-                                <span className={cn("text-xl font-heading font-bold text-sand-50 group-hover:text-gold-400 transition-colors", language === 'ar' && "font-serif")}>{t.address}</span>
+                                <span className={cn("text-xl font-heading font-bold text-sand-50 group-hover:text-gold-400 transition-colors", language === 'ar' && "font-serif")}>{settings?.address || t.address}</span>
                             </div>
                         </motion.div>
                     </div>

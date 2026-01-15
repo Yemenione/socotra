@@ -40,7 +40,7 @@ const Footer = () => {
                         {t.brand}
                     </span>
                     <p className={cn("max-w-md text-sand/60 leading-relaxed mb-8", language === 'ar' && "font-serif ml-auto")}>
-                        {t.description}
+                        {language === 'ar' ? (settings?.footerDescriptionAr || t.description) : (settings?.footerDescription || t.description)}
                     </p>
                     <div className={cn("flex gap-4", language === 'ar' ? "justify-end md:justify-start" : "")}>
                         {settings?.instagramUrl && (
@@ -73,7 +73,7 @@ const Footer = () => {
                     <ul className="space-y-4 text-sand/60">
                         <li className={cn("flex gap-3 items-start", language === 'ar' ? "flex-row-reverse" : "")}>
                             <MapPin size={20} className="text-gold shrink-0 mt-1" />
-                            <span>{t.location}</span>
+                            <span>{settings?.address || t.location}</span>
                         </li>
                         <li className={cn("flex gap-3 items-center", language === 'ar' ? "flex-row-reverse" : "")}>
                             <Phone size={20} className="text-gold shrink-0" />
@@ -87,7 +87,7 @@ const Footer = () => {
                         )}
                         <li className="pt-4 border-t border-white/10 mt-4">
                             <span className="block text-gold text-sm font-bold uppercase tracking-widest mb-1">{t.openDaily}</span>
-                            12:00 PM - 11:00 PM
+                            {language === 'ar' ? (settings?.openingHoursAr || "12:00 PM - 11:00 PM") : (settings?.openingHours || "12:00 PM - 11:00 PM")}
                         </li>
                     </ul>
                 </div>
@@ -97,6 +97,13 @@ const Footer = () => {
                 "border-t border-white/10 pt-8 text-center text-sand/40 text-sm flex flex-col md:flex-row justify-between px-6 max-w-7xl mx-auto items-center gap-4",
                 language === 'ar' && "md:flex-row-reverse"
             )}>
+                <div className="flex gap-4">
+                    {settings?.tiktokUrl && (
+                        <a href={settings.tiktokUrl} target="_blank" rel="noopener noreferrer" className="text-sand/60 hover:text-gold transition-colors">
+                            TikTok
+                        </a>
+                    )}
+                </div>
                 <p>© 2026 {t.brand}. {t.rights}</p>
                 <p>Paris • Yemen • Luxury</p>
             </div>

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
     try {
         const reservations = await prisma.reservation.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: { date: 'asc' }
         });
         return NextResponse.json(reservations);
     } catch (error) {
@@ -12,25 +12,18 @@ export async function GET() {
     }
 }
 
-export async function POST(request: Request) {
+export async function PATCH(request: Request) {
     try {
         const body = await request.json();
-        const { name, date, time, guests, phone, email } = body;
+        const { id, status } = body;
 
-        const reservation = await prisma.reservation.create({
-            data: {
-                name,
-                email: email || 'not_provided@example.com', // Optional field handling
-                phone: phone || '0000000000',
-                date: new Date(date),
-                time,
-                guests: parseInt(guests),
-            },
+        const updated = await prisma.reservation.update({
+            where: { id },
+            data: { status }
         });
 
-        return NextResponse.json(reservation);
+        return NextResponse.json(updated);
     } catch (error) {
-        console.error("Reservation Error:", error);
-        return NextResponse.json({ error: 'Failed to create reservation' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to update reservation' }, { status: 500 });
     }
 }

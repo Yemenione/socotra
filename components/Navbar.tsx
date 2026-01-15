@@ -77,7 +77,7 @@ const Navbar = () => {
                     {/* Logo Area */}
                     <Link href="/" className="flex-shrink-0 relative h-12 w-32 md:h-20 md:w-48 block transition-transform duration-500 hover:scale-105">
                         <Image
-                            src="/logo.png"
+                            src={settings?.logoUrl || "/logo.png"}
                             alt="Socotra Logo"
                             fill
                             className="object-contain drop-shadow-lg"

@@ -1,192 +1,161 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Upload, X, Trash2, Tag, Image as ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
-type GalleryImage = {
-    id: string;
-    src: string;
-    alt: string;
-    category?: string;
-};
-
 export default function GalleryManagement() {
-    const [images, setImages] = useState<GalleryImage[]>([]);
+    const [images, setImages] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newImage, setNewImage] = useState({ src: '', alt: '', category: 'interior' });
+    const [uploading, setUploading] = useState(false);
+    const [filter, setFilter] = useState('All');
 
-    const fetchImages = async () => {
+    useEffect(() => {
+        fetchGallery();
+    }, []);
+
+    const fetchGallery = async () => {
         try {
             const res = await fetch('/api/gallery');
-            const data = await res.json();
-            setImages(Array.isArray(data) ? data : []);
-        } catch (error) {
-            console.error("Failed to fetch images", error);
+            if (res.ok) setImages(await res.json());
+        } catch (e) {
+            console.error(e);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchImages();
-    }, []);
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-    const handleAddImage = async (e: React.FormEvent) => {
-        e.preventDefault();
+        setUploading(true);
+
         try {
+            // 1. Upload File
+            const uploadData = new FormData();
+            uploadData.append('file', file);
+
+            const uploadRes = await fetch('/api/upload', {
+                method: 'POST',
+                body: uploadData,
+            });
+
+            if (!uploadRes.ok) throw new Error('File upload failed');
+
+            const { url } = await uploadRes.json();
+
+            // 2. Save to Gallery DB
             const res = await fetch('/api/gallery', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newImage),
+                body: JSON.stringify({
+                    src: url,
+                    category: filter !== 'All' ? filter : 'Uncategorized',
+                    alt: file.name
+                })
             });
+
             if (res.ok) {
-                setIsModalOpen(false);
-                setNewImage({ src: '', alt: '', category: 'interior' });
-                fetchImages();
+                const newImg = await res.json();
+                setImages([newImg, ...images]);
             }
         } catch (error) {
-            console.error("Failed to add image", error);
+            console.error("Upload failed", error);
+        } finally {
+            setUploading(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this image?')) return;
         try {
-            const res = await fetch(`/api/gallery?id=${id}`, {
-                method: 'DELETE',
-            });
+            const res = await fetch(`/api/gallery?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
-                fetchImages();
+                setImages(images.filter(img => img.id !== id));
             }
         } catch (error) {
-            console.error("Failed to delete image", error);
+            console.error("Delete failed", error);
         }
     };
 
+    const filteredImages = filter === 'All' ? images : images.filter(img => img.category === filter);
+    const categories = ['All', 'Food', 'Interior', 'Drinks', 'Events', 'Uncategorized'];
+
+    if (loading) return <div className="flex h-96 items-center justify-center text-gold-500"><Loader2 className="animate-spin" size={32} /></div>;
+
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
+        <div className="space-y-8">
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-rich-black">Gallery Management</h1>
-                    <p className="text-sand-600">Manage your gallery images</p>
+                    <h2 className="text-2xl font-bold text-rich-black font-heading">Gallery Manager</h2>
+                    <p className="text-sand-500 text-sm">Curate your visual portfolio</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-rich-black text-sand-50 px-6 py-2.5 rounded-md font-bold hover:bg-gold-500 hover:text-rich-black transition-colors"
-                >
-                    <Plus size={18} />
-                    <span>Add New Image</span>
-                </button>
+                <label className="cursor-pointer bg-rich-black text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-gold-500 hover:text-rich-black transition-all flex items-center gap-3 shadow-lg hover:shadow-gold-500/20">
+                    <Upload size={18} />
+                    <span>Upload Image</span>
+                    <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
+                </label>
             </div>
 
-            {loading ? (
-                <div className="text-center py-12">Loading...</div>
-            ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {images.map(img => (
-                        <motion.div
-                            key={img.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="group relative aspect-square bg-sand-100 rounded-lg overflow-hidden shadow-sm"
-                        >
-                            <Image
-                                src={img.src}
-                                alt={img.alt}
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                <button
-                                    onClick={() => handleDelete(img.id)}
-                                    className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                                >
-                                    <Trash2 size={20} />
-                                </button>
-                            </div>
-                            <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/70 text-white text-xs truncate">
-                                {img.category}
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            )}
+            {/* Filters */}
+            <div className="flex gap-2 overflow-x-auto pb-2">
+                {categories.map(cat => (
+                    <button
+                        key={cat}
+                        onClick={() => setFilter(cat)}
+                        className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${filter === cat
+                            ? 'bg-gold-500 text-rich-black shadow-md scale-105'
+                            : 'bg-white border border-sand-200 text-sand-500 hover:bg-sand-50'
+                            }`}
+                    >
+                        {cat}
+                    </button>
+                ))}
+            </div>
 
-            {/* Add Image Modal */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden"
-                        >
-                            <div className="flex justify-between items-center p-6 border-b border-sand-200 bg-sand-50">
-                                <h3 className="text-xl font-bold text-rich-black">Add Image URL</h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-sand-500 hover:text-rich-black">
-                                    <X size={24} />
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleAddImage} className="p-6 space-y-4">
-                                <div>
-                                    <label className="block text-sm font-bold text-rich-black mb-1">Image URL</label>
-                                    <input
-                                        type="url"
-                                        required
-                                        placeholder="https://images.unsplash.com/..."
-                                        value={newImage.src}
-                                        onChange={(e) => setNewImage({ ...newImage, src: e.target.value })}
-                                        className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
-                                    />
-                                    <p className="text-xs text-sand-500 mt-1">For V1, please make sure the file exists in public/images or use an external URL.</p>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold text-rich-black mb-1">Alt Text</label>
-                                    <input
-                                        required
-                                        placeholder="Description of the image"
-                                        value={newImage.alt}
-                                        onChange={(e) => setNewImage({ ...newImage, alt: e.target.value })}
-                                        className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold text-rich-black mb-1">Category</label>
-                                    <select
-                                        value={newImage.category}
-                                        onChange={(e) => setNewImage({ ...newImage, category: e.target.value })}
-                                        className="w-full px-3 py-2 border border-sand-300 rounded focus:border-gold-500 outline-none"
-                                    >
-                                        <option value="interior">Interior</option>
-                                        <option value="food">Food</option>
-                                        <option value="events">Events</option>
-                                    </select>
-                                </div>
-                                <div className="pt-4 flex justify-end gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsModalOpen(false)}
-                                        className="px-4 py-2 text-sand-600 font-bold hover:bg-sand-100 rounded"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="px-6 py-2 bg-rich-black text-sand-50 font-bold rounded hover:bg-gold-500 hover:text-rich-black transition-colors"
-                                    >
-                                        Add Image
-                                    </button>
-                                </div>
-                            </form>
-                        </motion.div>
+            {/* Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {/* Uploading Placeholder */}
+                {uploading && (
+                    <div className="aspect-square rounded-xl bg-sand-100 flex flex-col items-center justify-center animate-pulse border-2 border-dashed border-sand-300">
+                        <Loader2 className="animate-spin text-rich-black mb-2" size={24} />
+                        <p className="text-xs font-bold text-sand-500">Uploading...</p>
                     </div>
                 )}
-            </AnimatePresence>
+
+                {filteredImages.length === 0 && !uploading && (
+                    <div className="col-span-full py-12 text-center text-sand-400">
+                        <ImageIcon size={48} className="mx-auto mb-4 opacity-50" />
+                        <p>No images found in this category.</p>
+                    </div>
+                )}
+
+                {filteredImages.map((img) => (
+                    <div key={img.id} className="group relative aspect-square rounded-xl overflow-hidden bg-rich-black shadow-md cursor-pointer">
+                        <Image
+                            src={img.src}
+                            alt={img.alt || 'Gallery'}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                        />
+
+                        {/* Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="px-2 py-1 bg-gold-500 text-rich-black text-[10px] font-bold rounded uppercase">{img.category}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <button className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg backdrop-blur-sm transition-colors">
+                                    <Tag size={14} />
+                                </button>
+                                <button onClick={() => handleDelete(img.id)} className="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-colors">
+                                    <Trash2 size={14} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

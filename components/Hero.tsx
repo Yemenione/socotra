@@ -11,6 +11,7 @@ const Hero = () => {
     const { language, dir } = useLanguage();
     const t = translations[language].hero;
 
+    const [settings, setSettings] = useState<any>(null);
     const [videoUrl, setVideoUrl] = useState("https://www.youtube.com/embed/VN5EoMGb-xw?autoplay=1&mute=1&controls=0&loop=1&playlist=VN5EoMGb-xw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1");
 
     useEffect(() => {
@@ -19,6 +20,7 @@ const Hero = () => {
                 const res = await fetch('/api/settings', { next: { revalidate: 60 } });
                 if (!res.ok) return;
                 const data = await res.json();
+                setSettings(data);
                 if (data?.heroVideoUrl) {
                     setVideoUrl(data.heroVideoUrl);
                 }
@@ -28,6 +30,12 @@ const Hero = () => {
         };
         fetchSettings();
     }, []);
+
+    // Dynamic Content with Fallbacks
+    const content = {
+        title: language === 'ar' ? (settings?.heroTitleAr || t.titlePart1) : (settings?.heroTitle || t.titlePart1),
+        subtitle: language === 'ar' ? (settings?.heroSubtitleAr || t.subtitle) : (settings?.heroSubtitle || t.subtitle),
+    };
 
     const { scrollYProgress } = useScroll({
         target: ref,
@@ -83,7 +91,7 @@ const Hero = () => {
                         language === 'ar' && "font-serif"
                     )}
                 >
-                    {t.titlePart1}
+                    {content.title}
                 </motion.h1>
 
                 <motion.h2
@@ -104,7 +112,7 @@ const Hero = () => {
                         language === 'ar' && "font-serif leading-loose"
                     )}
                 >
-                    {t.subtitle}
+                    {content.subtitle}
                 </motion.p>
 
                 <motion.div

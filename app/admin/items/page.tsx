@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, Save, X, Image as ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Image as ImageIcon, Search, Filter, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
 export default function ItemsManagement() {
@@ -16,41 +16,46 @@ export default function ItemsManagement() {
         price: '', categoryId: '', image: ''
     });
     const [uploading, setUploading] = useState(false);
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         fetchData();
     }, []);
 
     const fetchData = async () => {
-        const [itemsRes, catsRes] = await Promise.all([
-            fetch('/api/items'),
-            fetch('/api/categories')
-        ]);
-        if (itemsRes.ok) setItems(await itemsRes.json());
-        if (catsRes.ok) setCategories(await catsRes.json());
-        setLoading(false);
+        try {
+            const [itemsRes, catsRes] = await Promise.all([
+                fetch('/api/items'),
+                fetch('/api/categories')
+            ]);
+            if (itemsRes.ok) setItems(await itemsRes.json());
+            if (catsRes.ok) setCategories(await catsRes.json());
+        } catch (e) {
+            console.error("Failed to fetch menu data", e);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         setUploading(true);
-        const data = new FormData();
-        data.append("file", file);
+        const uploadData = new FormData();
+        uploadData.append('file', file);
 
         try {
             const res = await fetch('/api/upload', {
-                method: "POST",
-                body: data
+                method: 'POST',
+                body: uploadData,
             });
-            const json = await res.json();
-            if (json.success) {
-                setFormData(prev => ({ ...prev, image: json.url }));
+            if (res.ok) {
+                const data = await res.json();
+                setFormData(prev => ({ ...prev, image: data.url }));
             }
-        } catch (err) {
-            console.error(err);
-            alert("Image upload failed");
+        } catch (error) {
+            console.error("Upload failed", error);
         } finally {
             setUploading(false);
         }
@@ -59,22 +64,55 @@ export default function ItemsManagement() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // Assuming POST for now, need robust API
+            const method = editingId ? 'PUT' : 'POST';
+            const body = {
+                ...formData,
+                price: parseFloat(formData.price),
+                id: editingId
+            };
+
             const res = await fetch('/api/items', {
-                method: 'POST',
+                method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    price: parseFloat(formData.price) // Ensure number
-                }),
+                body: JSON.stringify(body),
             });
 
             if (res.ok) {
                 fetchData();
                 resetForm();
+                setShowForm(false);
             }
         } catch (error) {
             console.error("Error saving item", error);
+        }
+    };
+
+    const handleEdit = (item: any) => {
+        setFormData({
+            name: item.name,
+            nameEn: item.nameEn || '',
+            nameAr: item.nameAr || '',
+            description: item.description || '',
+            descriptionEn: item.descriptionEn || '',
+            descriptionAr: item.descriptionAr || '',
+            price: item.price,
+            categoryId: item.categoryId || (categories[0]?.id || ''),
+            image: item.image || ''
+        });
+        setEditingId(item.id);
+        setShowForm(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this item?')) return;
+        try {
+            const res = await fetch(`/api/items?id=${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                setItems(items.filter(item => item.id !== id));
+            }
+        } catch (error) {
+            console.error("Error deleting item", error);
         }
     };
 
@@ -89,104 +127,172 @@ export default function ItemsManagement() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-rich-black">Menu Items</h1>
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                    <h2 className="text-2xl font-bold text-rich-black font-heading">Menu Management</h2>
+                    <p className="text-sand-500 text-sm">Manage dishes and pricing</p>
+                </div>
+                <button
+                    onClick={() => { setShowForm(!showForm); resetForm(); }}
+                    className="bg-gold-500 text-rich-black px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-gold-600 shadow-md flex items-center gap-2"
+                >
+                    {showForm ? <X size={18} /> : <Plus size={18} />}
+                    {showForm ? 'Cancel' : 'Add New Item'}
+                </button>
+            </div>
 
-            {/* Form */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-sand-200">
-                <h3 className="font-bold mb-4">{editingId ? 'Edit Item' : 'Add New Item'}</h3>
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Basic Info */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500">Name (FR)</label>
-                        <input className="w-full p-2 border rounded" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500">Name (EN)</label>
-                        <input className="w-full p-2 border rounded" value={formData.nameEn} onChange={e => setFormData({ ...formData, nameEn: e.target.value })} />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500">Name (AR)</label>
-                        <input className="w-full p-2 border rounded text-right" value={formData.nameAr} onChange={e => setFormData({ ...formData, nameAr: e.target.value })} />
-                    </div>
-
-                    {/* Descriptions */}
-                    <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <textarea placeholder="Desc (FR)" rows={2} className="p-2 border rounded" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
-                        <textarea placeholder="Desc (EN)" rows={2} className="p-2 border rounded" value={formData.descriptionEn} onChange={e => setFormData({ ...formData, descriptionEn: e.target.value })} />
-                        <textarea placeholder="Desc (AR)" rows={2} className="p-2 border rounded text-right" value={formData.descriptionAr} onChange={e => setFormData({ ...formData, descriptionAr: e.target.value })} />
-                    </div>
-
-                    {/* Details */}
-                    <div>
-                        <label className="text-xs font-bold text-gray-500">Price (€)</label>
-                        <input type="number" step="0.01" className="w-full p-2 border rounded" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} required />
-                    </div>
-                    <div>
-                        <label className="text-xs font-bold text-gray-500">Category</label>
-                        <select className="w-full p-2 border rounded" value={formData.categoryId} onChange={e => setFormData({ ...formData, categoryId: e.target.value })} required>
-                            <option value="">Select...</option>
-                            {categories.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-                        </select>
-                    </div>
-
-                    {/* Image Upload */}
-                    <div>
-                        <label className="text-xs font-bold text-gray-500">Image</label>
-                        <div className="flex items-center gap-2">
-                            <input type="file" onChange={handleImageUpload} className="text-xs" accept="image/*" />
-                            {uploading && <span className="text-xs text-gold-600">Uploading...</span>}
-                        </div>
-                        {formData.image && (
-                            <div className="mt-2 relative w-16 h-16 rounded overflow-hidden border">
-                                <Image src={formData.image} alt="Preview" fill className="object-cover" />
+            {/* Form Section */}
+            {showForm && (
+                <div className="bg-white rounded-xl shadow-lg border border-sand-200 p-6 animate-in slide-in-from-top-5">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-sand-500 uppercase">Item Name</label>
+                                <input
+                                    required
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    className="w-full p-3 border border-sand-200 rounded-lg focus:border-gold-500 outline-none"
+                                    placeholder="Dish Name"
+                                />
                             </div>
-                        )}
-                    </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-sand-500 uppercase text-right block">اسم الصنف (عربي)</label>
+                                <input
+                                    type="text"
+                                    dir="rtl"
+                                    value={formData.nameAr}
+                                    onChange={e => setFormData({ ...formData, nameAr: e.target.value })}
+                                    className="w-full p-3 border border-sand-200 rounded-lg focus:border-gold-500 outline-none"
+                                    placeholder="اسم الطبق"
+                                />
+                            </div>
 
-                    <div className="md:col-span-3 flex justify-end gap-2 pt-4">
-                        {editingId && <button type="button" onClick={resetForm} className="px-4 py-2 text-gray-500">Cancel</button>}
-                        <button type="submit" disabled={uploading} className="bg-gold-500 text-rich-black px-6 py-2 rounded font-bold hover:bg-gold-600 disabled:opacity-50">
-                            {editingId ? 'Update Item' : 'Create Item'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-sand-500 uppercase">Price</label>
+                                <input
+                                    required
+                                    type="number"
+                                    step="0.01"
+                                    value={formData.price}
+                                    onChange={e => setFormData({ ...formData, price: e.target.value })}
+                                    className="w-full p-3 border border-sand-200 rounded-lg focus:border-gold-500 outline-none"
+                                    placeholder="0.00"
+                                />
+                            </div>
+                            <div className="space-y-2 bg-white">
+                                <label className="text-xs font-bold text-sand-500 uppercase">Category</label>
+                                <select
+                                    required
+                                    value={formData.categoryId}
+                                    onChange={e => setFormData({ ...formData, categoryId: e.target.value })}
+                                    className="w-full p-3 border border-sand-200 rounded-lg focus:border-gold-500 outline-none bg-white"
+                                >
+                                    <option value="">Select Category</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.title}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-            {/* List */}
-            <div className="bg-white rounded-lg shadow-sm border border-sand-200 overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-sand-100 text-left">
-                        <tr>
-                            <th className="p-4">Image</th>
-                            <th className="p-4">Name</th>
-                            <th className="p-4">Category</th>
-                            <th className="p-4">Price</th>
-                            <th className="p-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item: any) => (
-                            <tr key={item.id} className="border-t border-sand-100">
-                                <td className="p-4">
-                                    <div className="w-10 h-10 relative rounded overflow-hidden bg-gray-100">
-                                        {item.image && <Image src={item.image} alt={item.name} fill className="object-cover" />}
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-xs font-bold text-sand-500 uppercase">Description</label>
+                                <textarea
+                                    value={formData.description}
+                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    className="w-full p-3 border border-sand-200 rounded-lg focus:border-gold-500 outline-none"
+                                    rows={3}
+                                    placeholder="Brief description of the dish..."
+                                />
+                            </div>
+
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-xs font-bold text-sand-500 uppercase">Item Image</label>
+                                <div className="flex items-center gap-4 p-4 border border-dashed border-sand-300 rounded-lg bg-sand-50">
+                                    {formData.image ? (
+                                        <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-sand-200">
+                                            <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-20 h-20 rounded-lg bg-sand-200 flex items-center justify-center text-sand-400">
+                                            <ImageIcon size={24} />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <label className="cursor-pointer bg-white border border-sand-200 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gold-500 hover:text-rich-black transition-colors inline-flex items-center gap-2">
+                                            {uploading ? <Loader2 className="animate-spin" size={16} /> : <ImageIcon size={16} />}
+                                            {uploading ? 'Uploading...' : 'Upload Image'}
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
+                                        </label>
+                                        <p className="text-xs text-sand-500 mt-2">Supports JPG, PNG, WEBP (Max 2MB)</p>
                                     </div>
-                                </td>
-                                <td className="p-4 font-bold">
-                                    {item.name}
-                                    <div className="text-xs text-gray-400">{item.nameEn}</div>
-                                </td>
-                                <td className="p-4 text-sm bg-gray-50 rounded">{item.category?.title}</td>
-                                <td className="p-4 font-mono text-gold-600 font-bold">{item.price}€</td>
-                                <td className="p-4 flex justify-end gap-2">
-                                    {/* Editing logic is simplified for this demo, would populate state */}
-                                    <button className="p-2 text-red-600 hover:bg-red-50 rounded"><Trash2 size={18} /></button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end pt-4 border-t border-sand-100">
+                            <button
+                                type="submit"
+                                className="bg-rich-black text-gold-500 px-8 py-3 rounded-lg font-bold text-sm hover:bg-rich-black/90 shadow-lg flex items-center gap-2"
+                            >
+                                <Save size={18} />
+                                {editingId ? 'Update Item' : 'Create Item'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
+            {/* Items List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {items.map((item) => (
+                    <div key={item.id} className="group bg-white rounded-xl border border-sand-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div className="relative h-48 bg-sand-100">
+                            {item.image ? (
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-sand-300">
+                                    <ImageIcon size={48} />
+                                </div>
+                            )}
+                            <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => handleEdit(item)}
+                                    className="p-2 bg-white text-rich-black rounded-lg shadow-sm hover:bg-gold-500 transition-colors"
+                                >
+                                    <Pencil size={16} />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(item.id)}
+                                    className="p-2 bg-white text-red-500 rounded-lg shadow-sm hover:bg-red-500 hover:text-white transition-colors"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                            <div className="absolute bottom-2 left-2">
+                                <span className="px-2 py-1 bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold uppercase rounded">
+                                    {item.category?.title || 'Uncategorized'}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="p-4">
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="font-bold text-rich-black">{item.name}</h3>
+                                <span className="text-gold-600 font-bold font-mono">${Number(item.price).toFixed(2)}</span>
+                            </div>
+                            <p className="text-xs text-sand-500 line-clamp-2 mb-2">{item.description}</p>
+                            {/* <p className="text-xs text-sand-400 text-right font-serif" dir="rtl">{item.nameAr}</p> */}
+                            {item.nameAr && <div className="text-xs text-sand-400 text-right font-serif" dir="rtl">{item.nameAr}</div>}
+                        </div>
+                    </div>
+                ))}
             </div>
+            {items.length === 0 && !loading && (
+                <div className="text-center py-12 text-sand-400">
+                    <p>No items found. Add your first dish!</p>
+                </div>
+            )}
         </div>
     );
 }

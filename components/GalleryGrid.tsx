@@ -45,19 +45,33 @@ const galleryImages = [
 
 const GalleryGrid = () => {
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
-    const [images, setImages] = useState(galleryImages);
+    const [images, setImages] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchImages = async () => {
             try {
                 const res = await fetch('/api/gallery', { next: { revalidate: 0 } });
-                if (!res.ok) return;
+                if (!res.ok) throw new Error("Failed");
                 const data = await res.json();
+
                 if (Array.isArray(data) && data.length > 0) {
-                    setImages(data);
+                    // Add span logic for layout variety
+                    const formattedImages = data.map((img: any, i: number) => ({
+                        ...img,
+                        span: (i % 5 === 0) ? "md:col-span-2 md:row-span-2" : "md:col-span-1 md:row-span-1"
+                    }));
+                    setImages(formattedImages);
+                } else {
+                    // DB is empty, set to empty array (strict sync)
+                    setImages([]);
                 }
             } catch (error) {
                 console.error("Failed to fetch gallery images", error);
+                // Optional: Fallback to static if API fails entirely
+                // setImages(galleryImages); 
+            } finally {
+                setLoading(false);
             }
         };
         fetchImages();
@@ -82,34 +96,45 @@ const GalleryGrid = () => {
                     <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto" />
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[250px]">
-                    {images.map((image, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: index * 0.1 }}
-                            className={cn(
-                                "relative group overflow-hidden rounded-sm cursor-pointer border border-white/5",
-                                image.span
-                            )}
-                            onClick={() => setSelectedImage(index)}
-                        >
-                            <Image
-                                src={image.src}
-                                alt={image.alt}
-                                fill
-                                className="object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-rich-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-[2px]">
-                                <p className="text-gold-100 font-heading text-lg tracking-wider border-b border-gold-400 pb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                    {image.alt}
-                                </p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+                {loading ? (
+                    <div className="flex justify-center py-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
+                    </div>
+                ) : images.length === 0 ? (
+                    <div className="text-center text-sand-400 py-12">
+                        <p className="text-lg">Gallery is empty.</p>
+                        <p className="text-sm opacity-50">Upload photos from Admin Panel.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[250px]">
+                        {images.map((image, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: index * 0.1 }}
+                                className={cn(
+                                    "relative group overflow-hidden rounded-sm cursor-pointer border border-white/5",
+                                    image.span
+                                )}
+                                onClick={() => setSelectedImage(index)}
+                            >
+                                <Image
+                                    src={image.src}
+                                    alt={image.alt}
+                                    fill
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-rich-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-[2px]">
+                                    <p className="text-gold-100 font-heading text-lg tracking-wider border-b border-gold-400 pb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                        {image.alt}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Lightbox Modal */}

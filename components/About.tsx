@@ -103,7 +103,10 @@ const About = () => {
                 >
                     {/* Simple colorful placeholder gradient for now */}
                     <div className="absolute inset-0 bg-gradient-to-t from-rich-black/80 to-transparent opacity-60 z-10"></div>
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541518763669-27fef04b14fe?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"></div>
+                    <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
+                        style={{ backgroundImage: `url('${settings?.aboutImage || "https://images.unsplash.com/photo-1541518763669-27fef04b14fe?q=80&w=1000&auto=format&fit=crop"}')` }}
+                    />
 
                     <div className={cn(
                         "absolute bottom-10 z-20 text-sand-50",

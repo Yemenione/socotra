@@ -52,12 +52,19 @@ model GalleryImage {
 model SiteConfig {
   id              String   @id @default(cuid())
   heroVideoUrl    String?
+  heroTitle       String? @default("SOCOTRA")
+  heroTitleAr     String? @default("سقطرى")
+  heroSubtitle    String? @default("Experience the Essence of Yemen")
+  heroSubtitleAr  String? @default("اكتشف جوهر اليمن")
   instagramUrl    String?
   facebookUrl     String?
   twitterUrl      String?
   tiktokUrl       String?
   whatsappNumber  String?
   contactEmail    String?
+  address         String?  @default("12 Av. Montaigne, 75008 Paris")
+  openingHours    String?  @default("12:00 PM - 11:00 PM")
+  openingHoursAr  String?  @default("12:00 م - 11:00 م")
   logoUrl         String?  @default("/logo.png")
   
   // Signature Dish
@@ -79,6 +86,17 @@ model SiteConfig {
   seoTitle        String?
   seoDescription  String?
   seoKeywords     String?
+
+  // Reservation Section
+  reservationTitle     String? @default("Réservez Votre Expérience")
+  reservationTitleAr   String? @default("احجز تجربتك")
+  reservationSubtitle  String? @default("Immergez-vous dans l'atmosphère authentique de Socotra...")
+  reservationSubtitleAr String? @default("انغمس في أجواء سقطرى الأصلية...")
+  reservationImage     String?
+
+  // Footer
+  footerDescription    String? @db.Text
+  footerDescriptionAr  String? @db.Text
 
   updatedAt       DateTime @updatedAt
 }
