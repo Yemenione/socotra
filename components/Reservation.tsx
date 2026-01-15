@@ -160,7 +160,7 @@ const Reservation = () => {
                                                 language === 'ar' ? "text-right" : ""
                                             )}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            value={formData.email}
+                                            value={formData.email || ''}
                                         />
                                     </div>
                                     <div className="group">
@@ -173,7 +173,7 @@ const Reservation = () => {
                                                 language === 'ar' ? "text-right" : ""
                                             )}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            value={formData.phone}
+                                            value={formData.phone || ''}
                                         />
                                     </div>
                                 </div>
