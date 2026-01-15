@@ -13,6 +13,8 @@ const Reservation = () => {
 
     const [formData, setFormData] = useState({
         name: "",
+        email: "",
+        phone: "",
         date: "",
         time: "19:00",
         guests: "2"
@@ -44,18 +46,14 @@ const Reservation = () => {
                 body: JSON.stringify(formData),
             });
             if (res.ok) {
-                alert(language === 'ar' ? 'تم استلام طلبك! سيتم تحويلك إلى واتساب للتأكيد.' : 'Reservation received! Redirecting to WhatsApp for confirmation.');
+                alert(language === 'ar' ? 'تم استلام حجزك بنجاح! سنقوم بتأكيده قريباً.' : 'Reservation successfully received! We will confirm shortly.');
+                setFormData({ name: "", email: "", phone: "", date: "", time: "19:00", guests: "2" });
+            } else {
+                alert("Something went wrong. Please try again.");
             }
         } catch (error) {
             console.error("Failed to save reservation", error);
         }
-
-        // WhatsApp Logic (Dynamic)
-        const phone = settings?.whatsappNumber || "33178990678"; // Fallback
-        const cleanPhone = phone.replace(/\D/g, ''); // Ensure only numbers
-        const message = `Hello, I would like to reserve a table for ${formData.guests} people on ${formData.date} at ${formData.time}. Name: ${formData.name}`;
-        const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
     };
 
     return (
