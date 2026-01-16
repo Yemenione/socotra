@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Upload, X, Trash2, Tag, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { getImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 
 export default function GalleryManagement() {
@@ -132,10 +133,7 @@ export default function GalleryManagement() {
 
                 {filteredImages.map((img) => (
                     <div key={img.id} className="group relative aspect-square rounded-xl overflow-hidden bg-rich-black shadow-md cursor-pointer">
-                        import {getImageUrl} from '@/lib/utils';
-                        // ... (imports)
 
-                        // ... (in component return)
                         <Image
                             src={getImageUrl(img.src) || "/logo.png"}
                             alt={img.alt || 'Gallery'}
