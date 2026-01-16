@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import LuxCard from "./LuxCard";
 import { useLanguage } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 
 const Reservation = () => {
     const { language, dir } = useLanguage();
@@ -62,7 +62,7 @@ const Reservation = () => {
             <div className="absolute inset-0 z-0">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30"
-                    style={{ backgroundImage: `url('${settings?.reservationImage || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop"}')` }}
+                    style={{ backgroundImage: `url('${getImageUrl(settings?.reservationImage) || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop"}')` }}
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-rich-black via-rich-black/80 to-transparent"></div>
             </div>

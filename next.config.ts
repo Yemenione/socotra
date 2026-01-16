@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      // Allow loading images from the production site in development
+      ...(process.env.NEXT_PUBLIC_REMOTE_URL ? [{
+        protocol: 'https' as const,
+        hostname: new URL(process.env.NEXT_PUBLIC_REMOTE_URL).hostname,
+      }] : []),
     ],
   },
   output: 'standalone',

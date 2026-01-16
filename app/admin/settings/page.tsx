@@ -155,9 +155,26 @@ export default function SettingsPage() {
                                 <div className="flex items-center gap-4">
                                     <div className="relative w-20 h-20 bg-white rounded-lg border border-sand-200 flex items-center justify-center overflow-hidden shadow-sm">
                                         {formData.logoUrl ? (
-                                            <img src={formData.logoUrl} alt="Logo" className="object-contain w-full h-full p-2" />
+import {getImageUrl} from '@/lib/utils';
+                                        // ... (imports)
+
+                                        // ... (in component return)
+                                        // Logo
+                                        <img src={getImageUrl(formData.logoUrl)} alt="Logo" className="object-contain w-full h-full p-2" />
+
+// ...
+                                        // Reservation
+                                        <img src={getImageUrl(formData.reservationImage)} alt="Reservation BG" className="h-20 w-40 object-cover rounded-lg border border-sand-200" />
+
+// ...
+                                        // About
+                                        <img src={getImageUrl(formData.aboutImage)} alt="About" className="h-20 w-20 object-cover rounded-lg border border-sand-200" />
+
+// ...
+                                        // Signature
+                                        <img src={getImageUrl(formData.signatureImage)} alt="Signature" className="h-20 w-20 object-cover rounded-lg border border-sand-200" />
                                         ) : (
-                                            <span className="text-2xl">📷</span>
+                                        <span className="text-2xl">📷</span>
                                         )}
                                     </div>
                                     <div className="flex-1 space-y-2">

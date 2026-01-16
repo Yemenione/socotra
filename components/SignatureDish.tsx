@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/lib/language-context";
+import { getImageUrl } from "@/lib/utils";
 
 // As per user request, using the uploaded Mandi image (asset will need to be moved to public/images/mandi.jpg)
 // For now, I will use a placeholder or assume the user will place 'mandi.jpg' in public/images/
@@ -66,7 +67,7 @@ const SignatureDish = () => {
                 >
                     <div className="relative aspect-[4/5] w-full rounded-sm overflow-hidden border border-white/10">
                         <Image
-                            src={settings?.signatureImage || "/images/uploaded_mandi.png"}
+                            src={getImageUrl(settings?.signatureImage) || "/images/uploaded_mandi.png"}
                             alt={t.title}
                             fill
                             className="object-cover transition-transform duration-700 group-hover:scale-105"

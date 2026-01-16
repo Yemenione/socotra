@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Globe } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { useLanguage } from "@/lib/language-context"; // Import Hook
 import { translations } from "@/lib/translations"; // Import Translations
@@ -77,7 +77,7 @@ const Navbar = () => {
                     {/* Logo Area */}
                     <Link href="/" className="flex-shrink-0 relative h-12 w-32 md:h-20 md:w-48 block transition-transform duration-500 hover:scale-105">
                         <Image
-                            src={settings?.logoUrl || "/logo.png"}
+                            src={getImageUrl(settings?.logoUrl) || "/logo.png"}
                             alt="Socotra Logo"
                             fill
                             className="object-contain drop-shadow-lg"

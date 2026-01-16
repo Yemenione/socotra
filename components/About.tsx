@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 
 const About = () => {
     const { language, dir } = useLanguage();
@@ -105,7 +105,7 @@ const About = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-rich-black/80 to-transparent opacity-60 z-10"></div>
                     <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
-                        style={{ backgroundImage: `url('${settings?.aboutImage || "https://images.unsplash.com/photo-1541518763669-27fef04b14fe?q=80&w=1000&auto=format&fit=crop"}')` }}
+                        style={{ backgroundImage: `url('${getImageUrl(settings?.aboutImage) || "https://images.unsplash.com/photo-1541518763669-27fef04b14fe?q=80&w=1000&auto=format&fit=crop"}')` }}
                     />
 
                     <div className={cn(

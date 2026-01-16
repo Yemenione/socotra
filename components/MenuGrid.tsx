@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { menuData as staticMenuData, MenuCategory, MenuItem } from "@/lib/menu-data";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
 import { Loader2 } from "lucide-react";
@@ -46,7 +46,7 @@ const MenuGrid = () => {
                                 description: item.description,
                                 descriptionEn: item.descriptionEn || item.description,
                                 price: Number(item.price).toFixed(2) + "€",
-                                image: item.image || "/logo.png",
+                                image: getImageUrl(item.image) || "/logo.png",
                                 featured: false
                             }))
                     }));

@@ -132,8 +132,12 @@ export default function GalleryManagement() {
 
                 {filteredImages.map((img) => (
                     <div key={img.id} className="group relative aspect-square rounded-xl overflow-hidden bg-rich-black shadow-md cursor-pointer">
+                        import {getImageUrl} from '@/lib/utils';
+                        // ... (imports)
+
+                        // ... (in component return)
                         <Image
-                            src={img.src}
+                            src={getImageUrl(img.src) || "/logo.png"}
                             alt={img.alt || 'Gallery'}
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-110 opacity-90 group-hover:opacity-100"
